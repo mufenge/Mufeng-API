@@ -1,54 +1,89 @@
 package com.mufeng.project.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 帖子
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @TableName post
  */
 @TableName(value = "post")
 @Data
 public class Post implements Serializable {
-
     /**
      * id
      */
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * 标题
+     * 年龄
      */
-    private String title;
+    private Integer age;
 
     /**
-     * 内容
+     * 性别（0-男, 1-女）
+     */
+    private Integer gender;
+
+    /**
+     * 学历
+     */
+    private String education;
+
+    /**
+     * 地点
+     */
+    private String place;
+
+    /**
+     * 职业
+     */
+    private String job;
+
+    /**
+     * 联系方式
+     */
+    private String contact;
+
+    /**
+     * 感情经历
+     */
+    private String loveExp;
+
+    /**
+     * 内容（个人介绍）
      */
     private String content;
 
     /**
-     * 标签列表 json
+     * 照片地址
      */
-    private String tags;
+    private String photo;
+
+    /**
+     * 状态（0-待审核, 1-通过, 2-拒绝）
+     */
+    private Integer reviewStatus;
+
+    /**
+     * 审核信息
+     */
+    private String reviewMessage;
+
+    /**
+     * 浏览数
+     */
+    private Integer viewNum;
 
     /**
      * 点赞数
      */
     private Integer thumbNum;
-
-    /**
-     * 收藏数
-     */
-    private Integer favourNum;
 
     /**
      * 创建用户 id

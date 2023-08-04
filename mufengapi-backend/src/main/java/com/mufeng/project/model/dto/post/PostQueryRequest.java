@@ -1,65 +1,69 @@
 package com.mufeng.project.model.dto.post;
 
 import com.mufeng.project.common.PageRequest;
-import java.io.Serializable;
-import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * 查询请求
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author yupi
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class PostQueryRequest extends PageRequest implements Serializable {
 
     /**
-     * id
+     * 年龄
      */
-    private Long id;
+    private Integer age;
 
     /**
-     * id
+     * 性别（0-男, 1-女）
      */
-    private Long notId;
+    private Integer gender;
 
     /**
-     * 搜索词
+     * 学历
      */
-    private String searchText;
+    private String education;
 
     /**
-     * 标题
+     * 地点
      */
-    private String title;
+    private String place;
 
     /**
-     * 内容
+     * 职业
+     */
+    private String job;
+
+    /**
+     * 联系方式
+     */
+    private String contact;
+
+    /**
+     * 感情经历
+     */
+    private String loveExp;
+
+    /**
+     * 内容（个人介绍），支持模糊查询
      */
     private String content;
 
     /**
-     * 标签列表
+     * 状态（0-待审核, 1-通过, 2-拒绝）
      */
-    private List<String> tags;
-
-    /**
-     * 至少有一个标签
-     */
-    private List<String> orTags;
+    private Integer reviewStatus;
 
     /**
      * 创建用户 id
      */
     private Long userId;
-
-    /**
-     * 收藏用户 id
-     */
-    private Long favourUserId;
 
     private static final long serialVersionUID = 1L;
 }

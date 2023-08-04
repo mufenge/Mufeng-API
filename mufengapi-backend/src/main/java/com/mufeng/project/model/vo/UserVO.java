@@ -1,18 +1,17 @@
 package com.mufeng.project.model.vo;
 
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
- * 用户视图（脱敏）
+ * 用户视图
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @TableName user
  */
 @Data
 public class UserVO implements Serializable {
-
     /**
      * id
      */
@@ -24,17 +23,22 @@ public class UserVO implements Serializable {
     private String userName;
 
     /**
+     * 账号
+     */
+    private String userAccount;
+
+    /**
      * 用户头像
      */
     private String userAvatar;
 
     /**
-     * 用户简介
+     * 性别
      */
-    private String userProfile;
+    private Integer gender;
 
     /**
-     * 用户角色：user/admin/ban
+     * 用户角色: user, admin
      */
     private String userRole;
 
@@ -42,6 +46,11 @@ public class UserVO implements Serializable {
      * 创建时间
      */
     private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
 
     private static final long serialVersionUID = 1L;
 }

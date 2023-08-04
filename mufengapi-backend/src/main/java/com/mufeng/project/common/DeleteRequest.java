@@ -1,17 +1,16 @@
 package com.mufeng.project.common;
 
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 删除请求
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author yupi
  */
 @Data
 public class DeleteRequest implements Serializable {
-
     /**
      * id
      */

@@ -5,14 +5,10 @@ import com.mufeng.project.common.ErrorCode;
 /**
  * 自定义异常类
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author yupi
  */
 public class BusinessException extends RuntimeException {
 
-    /**
-     * 错误码
-     */
     private final int code;
 
     public BusinessException(int code, String message) {

@@ -5,9 +5,9 @@ import com.mufeng.project.model.entity.InterfaceInfo;
 
 /**
 * @author lenovo
-* @description 针对表【interface_info(接口信息)】的数据库操作Mapper
-* @createDate 2023-08-03 16:39:18
-* @Entity com.mufeng.model.entity.InterfaceInfo
+* @description 针对表【interface_info(接口信息表)】的数据库操作Mapper
+* @createDate 2023-08-04 13:50:24
+* @Entity generator.domain.InterfaceInfo
 */
 public interface InterfaceInfoMapper extends BaseMapper<InterfaceInfo> {
 

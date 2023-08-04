@@ -1,13 +1,13 @@
 package com.mufeng.project.model.dto.user;
 
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 用户创建请求
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author yupi
  */
 @Data
 public class UserAddRequest implements Serializable {
@@ -28,9 +28,19 @@ public class UserAddRequest implements Serializable {
     private String userAvatar;
 
     /**
+     * 性别
+     */
+    private Integer gender;
+
+    /**
      * 用户角色: user, admin
      */
     private String userRole;
+
+    /**
+     * 密码
+     */
+    private String userPassword;
 
     private static final long serialVersionUID = 1L;
 }

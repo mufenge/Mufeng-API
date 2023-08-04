@@ -14,25 +14,24 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * Knife4j 接口文档配置
  * https://doc.xiaominfo.com/knife4j/documentation/get_start.html
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author yupi
  */
 @Configuration
 @EnableSwagger2
-@Profile({"dev", "test"})
+@Profile("dev")
 public class Knife4jConfig {
 
     @Bean
     public Docket defaultApi2() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(new ApiInfoBuilder()
-                        .title("接口文档")
-                        .description("springboot-init")
+                        .title("project-backend")
+                        .description("project-backend")
                         .version("1.0")
                         .build())
                 .select()
                 // 指定 Controller 扫描包路径
-                .apis(RequestHandlerSelectors.basePackage("com.yupi.springbootinit.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.yupi.project.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }

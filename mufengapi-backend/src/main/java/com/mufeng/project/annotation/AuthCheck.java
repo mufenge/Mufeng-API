@@ -8,12 +8,18 @@ import java.lang.annotation.Target;
 /**
  * 权限校验
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author yupi
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AuthCheck {
+
+    /**
+     * 有任何一个角色
+     *
+     * @return
+     */
+    String[] anyRole() default "";
 
     /**
      * 必须有某个角色

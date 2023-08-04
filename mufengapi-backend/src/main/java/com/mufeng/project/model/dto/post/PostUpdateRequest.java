@@ -1,14 +1,13 @@
 package com.mufeng.project.model.dto.post;
 
-import java.io.Serializable;
-import java.util.List;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 更新请求
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @TableName product
  */
 @Data
 public class PostUpdateRequest implements Serializable {
@@ -16,22 +15,62 @@ public class PostUpdateRequest implements Serializable {
     /**
      * id
      */
-    private Long id;
+    private long id;
 
     /**
-     * 标题
+     * 年龄
      */
-    private String title;
+    private Integer age;
 
     /**
-     * 内容
+     * 性别（0-男, 1-女）
+     */
+    private Integer gender;
+
+    /**
+     * 学历
+     */
+    private String education;
+
+    /**
+     * 地点
+     */
+    private String place;
+
+    /**
+     * 职业
+     */
+    private String job;
+
+    /**
+     * 联系方式
+     */
+    private String contact;
+
+    /**
+     * 感情经历
+     */
+    private String loveExp;
+
+    /**
+     * 内容（个人介绍）
      */
     private String content;
 
     /**
-     * 标签列表
+     * 照片地址
      */
-    private List<String> tags;
+    private String photo;
+
+    /**
+     * 状态（0-待审核, 1-通过, 2-拒绝）
+     */
+    private Integer reviewStatus;
+
+    /**
+     * 审核信息
+     */
+    private String reviewMessage;
 
     private static final long serialVersionUID = 1L;
 }
