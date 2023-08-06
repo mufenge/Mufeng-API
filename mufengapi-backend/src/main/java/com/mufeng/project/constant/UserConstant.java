@@ -3,7 +3,7 @@ package com.mufeng.project.constant;
 /**
  * 用户常量
  *
- * @author yupi
+ * @author mufeng
  */
 public interface UserConstant {
 

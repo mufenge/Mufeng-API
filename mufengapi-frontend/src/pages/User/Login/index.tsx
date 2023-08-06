@@ -20,6 +20,7 @@ import { FormattedMessage, Helmet, history, SelectLang, useIntl, useModel } from
 import { Alert, message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import Settings from '../../../../config/defaultSettings';
+import {flushSync} from "react-dom";
 
 const ActionIcons = () => {
   const langClassName = useEmotionCss(({ token }) => {
@@ -83,9 +84,9 @@ const LoginMessage: React.FC<{
 };
 
 const Login: React.FC = () => {
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
+  const [userLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const { setInitialState } = useModel('@@initialState');
 
   const containerClassName = useEmotionCss(() => {
     return {
@@ -100,6 +101,13 @@ const Login: React.FC = () => {
   });
   const intl = useIntl();
 
+  const fetchUserInfo = (userInfo: API.UserVO)=>{
+    if(userInfo){
+      flushSync(()=>{
+        setInitialState({loginUser: userInfo});
+      })
+    }
+  }
   const handleSubmit = async (values: API.UserLoginRequest) => {
     try {
       // 登录
@@ -107,9 +115,8 @@ const Login: React.FC = () => {
       if (res.data) {
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
-        setInitialState({
-          loginUser: res.data,
-        });
+        fetchUserInfo(res.data);
+        //setInitialState({loginUser: res.data,});
         return;
       }
     } catch (error) {

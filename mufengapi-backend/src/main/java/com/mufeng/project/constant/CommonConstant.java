@@ -3,7 +3,7 @@ package com.mufeng.project.constant;
 /**
  * 通用常量
  *
- * @author yupi
+ * @author mufeng
  */
 public interface CommonConstant {
 

@@ -3,7 +3,7 @@ package com.mufeng.project.common;
 /**
  * 返回工具类
  *
- * @author yupi
+ * @author mufeng
  */
 public class ResultUtils {
 
