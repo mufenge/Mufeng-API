@@ -60,7 +60,7 @@ public class InterfaceInfoController {
         // 校验
         interfaceInfoService.validInterfaceInfo(interfaceInfo, true);
         User loginUser = userService.getLoginUser(request);
-        interfaceInfo.setId(loginUser.getId());
+        interfaceInfo.setUserId(loginUser.getId().toString());
         boolean result = interfaceInfoService.save(interfaceInfo);
         if (!result) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR);
