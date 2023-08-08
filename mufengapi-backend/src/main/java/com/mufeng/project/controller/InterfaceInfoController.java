@@ -2,12 +2,14 @@ package com.mufeng.project.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.gson.Gson;
 import com.mufeng.mufengapiclientsdk.client.MufengAPIClient;
 import com.mufeng.project.annotation.AuthCheck;
 import com.mufeng.project.common.*;
 import com.mufeng.project.constant.CommonConstant;
 import com.mufeng.project.exception.BusinessException;
 import com.mufeng.project.model.dto.interfaceinfo.InterfaceInfoAddRequest;
+import com.mufeng.project.model.dto.interfaceinfo.InterfaceInfoInvokeRequest;
 import com.mufeng.project.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import com.mufeng.project.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import com.mufeng.project.model.entity.InterfaceInfo;
@@ -106,7 +108,7 @@ public class InterfaceInfoController {
      */
     @PostMapping("/update")
     public BaseResponse<Boolean> updateInterfaceInfo(@RequestBody InterfaceInfoUpdateRequest interfaceInfoUpdateRequest,
-                                            HttpServletRequest request) {
+                                                     HttpServletRequest request) {
         if (interfaceInfoUpdateRequest == null || interfaceInfoUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -209,7 +211,7 @@ public class InterfaceInfoController {
     public BaseResponse<Boolean> onlineInterfaceInfo(@RequestBody IDRequest idRequest,
                                                      HttpServletRequest request) {
 
-        if(idRequest == null || idRequest.getId()<=0){
+        if (idRequest == null || idRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         long id = idRequest.getId();
@@ -223,8 +225,8 @@ public class InterfaceInfoController {
         user.setUsername("asdf");
         String username = mufengAPIClient.getUsernameByPost(user);
 
-        if (StringUtils.isBlank(username)){
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"接口验证失败");
+        if (StringUtils.isBlank(username)) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败");
         }
         // 仅本人或管理员可修改
         InterfaceInfo interfaceInfo = new InterfaceInfo();
@@ -233,6 +235,7 @@ public class InterfaceInfoController {
         boolean result = interfaceInfoService.updateById(interfaceInfo);
         return ResultUtils.success(result);
     }
+
     /**
      * 下线
      *
@@ -260,5 +263,40 @@ public class InterfaceInfoController {
         interfaceInfo.setStatus(InterfaceInfoStatusEnum.OFFLINE.getValue());
         boolean result = interfaceInfoService.updateById(interfaceInfo);
         return ResultUtils.success(result);
+    }
+
+    /**
+     * 接口调用
+     *
+     * @param interfaceInfoInvokeRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/invoke")
+    public BaseResponse<String> invokeInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
+                                                      HttpServletRequest request) {
+
+        if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long id = interfaceInfoInvokeRequest.getId();
+        String userRequestParams = interfaceInfoInvokeRequest.getUserRequestParams();
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        if (oldInterfaceInfo.getStatus() == InterfaceInfoStatusEnum.OFFLINE.getValue()) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已经关闭");
+        }
+
+        User loginuser = userService.getLoginUser(request);
+        String accessKey = loginuser.getAccessKey();
+        String secretKey = loginuser.getSecretKey();
+        MufengAPIClient tempclient = new MufengAPIClient(accessKey, secretKey);
+        Gson gson = new Gson();
+        com.mufeng.mufengapiclientsdk.model.User user = gson.fromJson(userRequestParams, com.mufeng.mufengapiclientsdk.model.User.class);
+        String usernameByPost = tempclient.getUsernameByPost(user);
+        return ResultUtils.success(usernameByPost);
     }
 }

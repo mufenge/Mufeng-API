@@ -25,7 +25,7 @@ public class NameController {
     }
     @PostMapping("/user")
     public String getUsernameByPost(@RequestBody User user, HttpServletRequest request){
-        String accessKey=request.getHeader("accessKey");
+        String accessKey = user.getUsername();
         String nonce=request.getHeader("nonce");
         String timestamp=request.getHeader("timestamp");
         String sign=request.getHeader("sign");
@@ -39,9 +39,7 @@ public class NameController {
         }
 
         String serversign = SignUtils.getSign(body,"abcdefgh");
-        if (!sign.equals(serversign)){
-            throw new RuntimeException("无权限");
-        }
-        return "POST： 你的名字"+ user.getUsername();
+
+        return "Interface: "+ user.getUsername();
     }
 }

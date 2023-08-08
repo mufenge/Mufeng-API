@@ -5,4 +5,4 @@ server:
 mufeng:
   client:
     access-key: asdf
-    secret-key: abcdef
+    secret-key: abcdefgh
