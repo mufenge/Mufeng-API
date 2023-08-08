@@ -2,11 +2,9 @@ package com.mufeng.project.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.mufeng.mufengapiclientsdk.client.MufengAPIClient;
 import com.mufeng.project.annotation.AuthCheck;
-import com.mufeng.project.common.BaseResponse;
-import com.mufeng.project.common.DeleteRequest;
-import com.mufeng.project.common.ErrorCode;
-import com.mufeng.project.common.ResultUtils;
+import com.mufeng.project.common.*;
 import com.mufeng.project.constant.CommonConstant;
 import com.mufeng.project.exception.BusinessException;
 import com.mufeng.project.model.dto.interfaceinfo.InterfaceInfoAddRequest;
@@ -14,6 +12,7 @@ import com.mufeng.project.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import com.mufeng.project.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import com.mufeng.project.model.entity.InterfaceInfo;
 import com.mufeng.project.model.entity.User;
+import com.mufeng.project.model.enums.InterfaceInfoStatusEnum;
 import com.mufeng.project.service.InterfaceInfoService;
 import com.mufeng.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * 帖子接口
+ * 接口管理
  *
  * @author mufeng
  */
@@ -35,6 +34,8 @@ import java.util.List;
 @Slf4j
 public class InterfaceInfoController {
 
+    @Resource
+    private MufengAPIClient mufengAPIClient;
     @Resource
     private InterfaceInfoService interfaceInfoService;
 
@@ -196,4 +197,68 @@ public class InterfaceInfoController {
 
     // endregion
 
+    /**
+     * 发布
+     *
+     * @param idRequest
+     * @param request
+     * @return
+     */
+    @AuthCheck(mustRole = "admin")
+    @PostMapping("/online")
+    public BaseResponse<Boolean> onlineInterfaceInfo(@RequestBody IDRequest idRequest,
+                                                     HttpServletRequest request) {
+
+        if(idRequest == null || idRequest.getId()<=0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long id = idRequest.getId();
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        //判断该接口是否可以调用
+        com.mufeng.mufengapiclientsdk.model.User user = new com.mufeng.mufengapiclientsdk.model.User();
+        user.setUsername("asdf");
+        String username = mufengAPIClient.getUsernameByPost(user);
+
+        if (StringUtils.isBlank(username)){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"接口验证失败");
+        }
+        // 仅本人或管理员可修改
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        interfaceInfo.setId(id);
+        interfaceInfo.setStatus(InterfaceInfoStatusEnum.ONLINE.getValue());
+        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(result);
+    }
+    /**
+     * 下线
+     *
+     * @param idRequest
+     * @param request
+     * @return
+     */
+    @AuthCheck(mustRole = "admin")
+    @PostMapping("/offline")
+    public BaseResponse<Boolean> offlineInterfaceInfo(@RequestBody IDRequest idRequest,
+                                                      HttpServletRequest request) {
+
+        if (idRequest == null || idRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long id = idRequest.getId();
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        // 仅本人或管理员可修改
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        interfaceInfo.setId(id);
+        interfaceInfo.setStatus(InterfaceInfoStatusEnum.OFFLINE.getValue());
+        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(result);
+    }
 }
