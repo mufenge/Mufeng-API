@@ -4,6 +4,8 @@ import {
   addInterfaceInfoUsingPOST,
   deleteInterfaceInfoUsingPOST,
   listInterfaceInfoByPageUsingGET,
+  offlineInterfaceInfoUsingPOST,
+  onlineInterfaceInfoUsingPOST,
   updateInterfaceInfoUsingPOST,
 } from '@/services/mufengapi-backend/interfaceInfoController';
 import { PlusOutlined } from '@ant-design/icons';
@@ -65,6 +67,52 @@ const TableList: React.FC = () => {
   };
 
   /**
+   *  Delete node
+   * @zh-CN 发布接口
+   *
+   * @param record
+   */
+  const handleOnline = async (record: API.IDRequest) => {
+    const hide = message.loading('发布中');
+    if (!record) return true;
+    try {
+      await onlineInterfaceInfoUsingPOST({
+        id: record.id,
+      });
+      hide();
+      message.success('发布成功！');
+      actionRef.current?.reload();
+      return true;
+    } catch (error) {
+      hide();
+      message.error('发布失败');
+      return false;
+    }
+  };
+  /**
+   *  Delete node
+   * @zh-CN 下线接口
+   *
+   * @param record
+   */
+  const handleOffline = async (record: API.IDRequest) => {
+    const hide = message.loading('下线中');
+    if (!record) return true;
+    try {
+      await offlineInterfaceInfoUsingPOST({
+        id: record.id,
+      });
+      hide();
+      message.success('下线成功！');
+      actionRef.current?.reload();
+      return true;
+    } catch (error) {
+      hide();
+      message.error('下线失败！');
+      return false;
+    }
+  };
+  /**
    * @en-US Update node
    * @zh-CN 更新节点
    *
@@ -120,7 +168,6 @@ const TableList: React.FC = () => {
       title: 'id',
       dataIndex: 'id',
       valueType: 'text',
-
     },
     {
       title: '接口名称',
@@ -202,14 +249,36 @@ const TableList: React.FC = () => {
         >
           修改
         </a>,
-        <a
+        record.status === 0 ? (
+          <a
+            key="config"
+            onClick={() => {
+              handleOnline(record);
+            }}
+          >
+            发布
+          </a>
+        ) : null,
+        record.status === 1 ? (
+          <a
+            key="config"
+            onClick={() => {
+              handleOffline(record);
+            }}
+          >
+            下线
+          </a>
+        ) : null,
+        <Button
+          type={'text'}
           key="config2"
+          danger
           onClick={() => {
             handleRemove(record);
           }}
         >
           删除
-        </a>,
+        </Button>,
       ],
     },
   ];
