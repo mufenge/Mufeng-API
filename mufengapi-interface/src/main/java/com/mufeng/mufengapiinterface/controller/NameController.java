@@ -39,7 +39,9 @@ public class NameController {
         }
 
         String serversign = SignUtils.getSign(body,"abcdefgh");
+        String result =  "Interface: "+ user.getUsername();
+        //调用成功
 
-        return "Interface: "+ user.getUsername();
+        return result;
     }
 }

@@ -94,7 +94,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
           <SettingDrawer
             disableUrlParams
             enableDarkTheme
-            settings={initialState?.settings}
+
             onSettingChange={(settings) => {
               setInitialState((preInitialState) => ({
                 ...preInitialState,
@@ -105,7 +105,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         </>
       );
     },
-    ...initialState?.settings,
+
   };
 };
 
