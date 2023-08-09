@@ -14,13 +14,14 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/name")
 public class NameController {
 
-    @GetMapping("/")
-    public String getNamebyGet(String name){
+    @GetMapping("/get")
+    public String getNameByGet(String name){
 
         return "GET:你的名字" +name;
     }
-    @PostMapping("/")
+    @RequestMapping("/post")
     public String getNameByPost(@RequestParam String name){
+
         return "POST:你的名字"+name;
     }
     @PostMapping("/user")
