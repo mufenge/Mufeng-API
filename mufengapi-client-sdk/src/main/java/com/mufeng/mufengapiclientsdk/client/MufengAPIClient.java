@@ -19,6 +19,7 @@ import static com.mufeng.mufengapiclientsdk.utils.SignUtils.getSign;
  */
 public class MufengAPIClient {
 
+    private static final String GATEWAY_HOST = "http://localhost:8090";
     private String accessKey;
     private String secretKey;
 
@@ -52,14 +53,14 @@ public class MufengAPIClient {
         hashmap.put("nonce", RandomUtil.randomNumbers(4));
         hashmap.put("body",body);
         hashmap.put("timestamp",String.valueOf(System.currentTimeMillis()/1000));
-        hashmap.put("sign",getSign(body,secretKey));
+        hashmap.put("sign",getSign(accessKey,secretKey));
         return hashmap;
     }
 
 
-    public String getUsernameByPost( User user){
+    public String getUsernameByPost(User user){
         String json = JSONUtil.toJsonStr(user);
-        HttpResponse httpResponse = HttpRequest.post("http://localhost:8123/api/name/user")
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST+"/api/name/user")
                 .addHeaders(getHeaderMap(json))
                 .body(json)
                 .execute();

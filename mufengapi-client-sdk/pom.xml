@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.mufeng</groupId>
     <artifactId>mufengapi-client-sdk</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.3</version>
     <name>mufengapi-client-sdk</name>
     <description>mufengapi-client-sdk</description>
     <properties>

@@ -32,17 +32,10 @@ public class NameController {
         String sign=request.getHeader("sign");
         String body=request.getHeader("body");
         //实际情况根据数据库查询
-        if(!accessKey.equals("asdf")){
-            throw new RuntimeException("无权限");
-        }
-        if (Long.parseLong(nonce)>10000){
-            throw new RuntimeException("无权限");
-        }
 
-        String serversign = SignUtils.getSign(body,"abcdefgh");
+
         String result =  "Interface: "+ user.getUsername();
         //调用成功
-
         return result;
     }
 }

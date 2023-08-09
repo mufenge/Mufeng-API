@@ -1,5 +1,6 @@
 package com.mufeng.mufengapigateway;
 
+import com.mufeng.mufengapiclientsdk.utils.SignUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -27,7 +28,7 @@ import static com.fasterxml.jackson.databind.cfg.CoercionInputShape.Array;
 @Component
 public class CustomGlobalFilter implements GlobalFilter, Ordered {
 
-    private static final List<String> IP_WHITE_LIST = Arrays.asList("127.0..0.1");
+    private static final List<String> IP_WHITE_LIST = Arrays.asList("127.0.0.1");
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -62,15 +63,24 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             return handleNoAuth(response);
         }
         Long currentTime = System.currentTimeMillis() / 1000L;
-        Long FIVE_MINUTES = 60*5L;
-        if ((currentTime - Long.parseLong(timestamp)) >= FIVE_MINUTES ){
+        final Long FIVE_MINUTES = 60 * 5L;
+        if ((currentTime - Long.parseLong(timestamp)) >= FIVE_MINUTES) {
             return handleNoAuth(response);
         }
+        String serverSign = SignUtils.getSign(accessKey,"abcdefgh");
+        if (!sign.equals(serverSign)) {
+            return handleNoAuth(response);
+        }
+        //4.判断请求模拟接口信息
+        //todo 数据库操作
+        //5.请求转发，调用接口
 
+        //6.调用失败，返回规范错误码
+        if (response.getStatusCode() == HttpStatus.OK) {
 
-        String serversign = SignUtils.getSign(body, "abcdefgh");
-        String result = "Interface: " + user.getUsername();
-
+        } else {
+            return handleInvokeError(response);
+        }
         return chain.filter(exchange);
     }
 
@@ -81,6 +91,11 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
 
     public Mono<Void> handleNoAuth(ServerHttpResponse response) {
         response.setStatusCode(HttpStatus.FORBIDDEN);
+        return response.setComplete();
+    }
+
+    public Mono<Void> handleInvokeError(ServerHttpResponse response) {
+        response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
         return response.setComplete();
     }
 }
