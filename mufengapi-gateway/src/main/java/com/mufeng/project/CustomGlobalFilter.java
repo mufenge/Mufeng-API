@@ -1,7 +1,14 @@
 package com.mufeng.project;
 
+import com.mufeng.model.entity.InterfaceInfo;
+import com.mufeng.model.entity.User;
 import com.mufeng.mufengapiclientsdk.utils.SignUtils;
+import com.mufeng.service.InnerInterfaceInfoService;
+import com.mufeng.service.InnerUserInterfaceInfoService;
+import com.mufeng.service.InnerUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -23,23 +30,32 @@ import java.util.List;
  */
 @Slf4j
 @Component
+@EnableDubbo
 public class CustomGlobalFilter implements GlobalFilter, Ordered {
 
+    @DubboReference
+    private InnerUserService innerUserService;
+    @DubboReference
+    private InnerInterfaceInfoService innerInterfaceInfoService;
+    @DubboReference
+    private InnerUserInterfaceInfoService innerUserInterfaceInfoService;
     private static final List<String> IP_WHITE_LIST = Arrays.asList("127.0.0.1");
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         //实现业务逻辑
+
         //1.请求日志
         ServerHttpRequest request = exchange.getRequest();
+        String path =  request.getPath().value();
+        String method = request.getMethod().toString();
         log.info("请求唯一标识:" + request.getId());
-        log.info("请求路径:" + request.getPath().value());
-        log.info("请求方法:" + request.getMethod());
+        log.info("请求路径:" + path);
+        log.info("请求方法:" + method);
         log.info("请求参数:" + request.getQueryParams());
         log.info("请求来源地址:" + request.getRemoteAddress());
         String address = request.getLocalAddress().getHostString();
         log.info("请求来源地址:" + request.getLocalAddress().getHostString());
-
         ServerHttpResponse response = exchange.getResponse();
         //2.黑白名单
         if (!IP_WHITE_LIST.contains(address)) {
@@ -52,10 +68,16 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         String timestamp = headers.getFirst("timestamp");
         String sign = headers.getFirst("sign");
         String body = headers.getFirst("body");
-        //实际情况根据数据库查询
-        if (!accessKey.equals("mufeng")) {
+        User invokeUser = null;
+        try {
+            invokeUser = innerUserService.getInvokeUser(accessKey);
+        } catch (Exception e) {
+            log.error("getError");
+        }
+        if (invokeUser == null) {
             return handleNoAuth(response);
         }
+        //超时时间5分钟
         if (Long.parseLong(nonce) > 10000L) {
             return handleNoAuth(response);
         }
@@ -64,16 +86,25 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if ((currentTime - Long.parseLong(timestamp)) >= FIVE_MINUTES) {
             return handleNoAuth(response);
         }
-        String serverSign = SignUtils.getSign(accessKey, "abcdefgh");
-        if (!sign.equals(serverSign)) {
+        String secretKey = invokeUser.getSecretKey();
+        String serverSign = SignUtils.getSign(accessKey, secretKey);
+        if (sign == null || !sign.equals(serverSign)) {
             return handleNoAuth(response);
         }
         //4.判断请求接口信息
-        //todo 数据库操作
-        //5.请求转发，调用接口
+        InterfaceInfo interfaceInfo = null;
+        try {
+            interfaceInfo = innerInterfaceInfoService.getInterfaceInfo(path,method);
+        } catch (Exception e) {
+            log.error("getError");
+        }
+        if (interfaceInfo == null) {
+            return handleNoAuth(response);
+        }
 
-        //6.调用失败，返回规范错误码
+        //6.调用成功，invokeCount；调用失败，返回规范错误码
         if (response.getStatusCode() == HttpStatus.OK) {
+            innerUserInterfaceInfoService.invokeCount(interfaceInfo.getId(),invokeUser.getId());
             log.info("响应结果：" + response.getStatusCode());
         } else {
             return handleInvokeError(response);

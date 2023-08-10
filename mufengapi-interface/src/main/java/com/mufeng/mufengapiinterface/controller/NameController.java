@@ -2,7 +2,6 @@ package com.mufeng.mufengapiinterface.controller;
 
 
 import com.mufeng.mufengapiclientsdk.model.User;
-import com.mufeng.mufengapiclientsdk.utils.SignUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
