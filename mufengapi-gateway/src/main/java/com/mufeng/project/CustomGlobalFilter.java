@@ -1,4 +1,4 @@
-package com.mufeng.mufengapigateway;
+package com.mufeng.project;
 
 import com.mufeng.mufengapiclientsdk.utils.SignUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -13,11 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static com.fasterxml.jackson.databind.cfg.CoercionInputShape.Array;
 
 /**
  * 全局过滤器
@@ -67,17 +64,17 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if ((currentTime - Long.parseLong(timestamp)) >= FIVE_MINUTES) {
             return handleNoAuth(response);
         }
-        String serverSign = SignUtils.getSign(accessKey,"abcdefgh");
+        String serverSign = SignUtils.getSign(accessKey, "abcdefgh");
         if (!sign.equals(serverSign)) {
             return handleNoAuth(response);
         }
-        //4.判断请求模拟接口信息
+        //4.判断请求接口信息
         //todo 数据库操作
         //5.请求转发，调用接口
 
         //6.调用失败，返回规范错误码
         if (response.getStatusCode() == HttpStatus.OK) {
-
+            log.info("响应结果：" + response.getStatusCode());
         } else {
             return handleInvokeError(response);
         }

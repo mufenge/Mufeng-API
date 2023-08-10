@@ -8,3 +8,12 @@ spring:
           uri: http://localhost:8123
           predicates:
             - Path=/api/**
+dubbo:
+  application:
+    name: mufengapi-gateway
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    id: nacos-registry
+    address: nacos://10.206.25.10:8091

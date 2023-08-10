@@ -36,3 +36,12 @@ mufeng:
   client:
     access-key: asdf
     secret-key: abcdefgh
+dubbo:
+  application:
+    name: mufengapi-backend
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    id: nacos-registry
+    address: nacos://10.206.25.10:8091
