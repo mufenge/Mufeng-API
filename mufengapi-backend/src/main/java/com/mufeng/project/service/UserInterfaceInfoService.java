@@ -1,8 +1,8 @@
 package com.mufeng.project.service;
 
+
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mufeng.project.model.entity.InterfaceInfo;
-import com.mufeng.project.model.entity.UserInterfaceInfo;
+import com.mufeng.model.entity.UserInterfaceInfo;
 
 /**
 * @author lenovo

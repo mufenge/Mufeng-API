@@ -1,8 +1,10 @@
 package com.mufeng.project.service;
 
 
+
+
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mufeng.project.model.entity.User;
+import com.mufeng.model.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
 

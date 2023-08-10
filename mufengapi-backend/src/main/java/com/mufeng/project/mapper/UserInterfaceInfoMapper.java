@@ -1,7 +1,7 @@
 package com.mufeng.project.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.mufeng.project.model.entity.UserInterfaceInfo;
+import com.mufeng.model.entity.UserInterfaceInfo;
 
 /**
 * @author lenovo

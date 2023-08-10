@@ -3,10 +3,10 @@ package com.mufeng.project.service.impl;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import com.mufeng.model.entity.UserInterfaceInfo;
 import com.mufeng.project.common.ErrorCode;
 import com.mufeng.project.exception.BusinessException;
 import com.mufeng.project.mapper.UserInterfaceInfoMapper;
-import com.mufeng.project.model.entity.UserInterfaceInfo;
 import com.mufeng.project.service.UserInterfaceInfoService;
 import org.springframework.stereotype.Service;
 

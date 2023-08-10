@@ -20,6 +20,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.mufeng</groupId>
+            <artifactId>mufengapi-common</artifactId>
+            <version>0.0.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
             <version>3.0.9</version>

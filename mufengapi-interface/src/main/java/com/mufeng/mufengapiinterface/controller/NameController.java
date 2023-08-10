@@ -33,9 +33,7 @@ public class NameController {
         String body=request.getHeader("body");
         //实际情况根据数据库查询
 
-
-        String result =  "Interface: "+ user.getUsername();
         //调用成功
-        return result;
+        return "Interface: "+ user.getUsername();
     }
 }

@@ -2,6 +2,7 @@ package com.mufeng.project.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.mufeng.model.entity.User;
 import com.mufeng.project.annotation.AuthCheck;
 import com.mufeng.project.common.BaseResponse;
 import com.mufeng.project.common.DeleteRequest;
@@ -13,7 +14,6 @@ import com.mufeng.project.model.dto.post.PostAddRequest;
 import com.mufeng.project.model.dto.post.PostQueryRequest;
 import com.mufeng.project.model.dto.post.PostUpdateRequest;
 import com.mufeng.project.model.entity.Post;
-import com.mufeng.project.model.entity.User;
 import com.mufeng.project.service.PostService;
 import com.mufeng.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;

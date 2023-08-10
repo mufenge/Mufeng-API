@@ -1,10 +1,10 @@
 package com.mufeng.project.aop;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.mufeng.model.entity.User;
 import com.mufeng.project.annotation.AuthCheck;
 import com.mufeng.project.common.ErrorCode;
 import com.mufeng.project.exception.BusinessException;
-import com.mufeng.project.model.entity.User;
 import com.mufeng.project.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;

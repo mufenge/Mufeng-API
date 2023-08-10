@@ -2,6 +2,9 @@ package com.mufeng.project.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
+import com.mufeng.model.entity.User;
+import com.mufeng.model.entity.UserInterfaceInfo;
 import com.mufeng.mufengapiclientsdk.client.MufengAPIClient;
 import com.mufeng.project.annotation.AuthCheck;
 import com.mufeng.project.common.*;
@@ -12,9 +15,6 @@ import com.mufeng.project.exception.BusinessException;
 import com.mufeng.project.model.dto.userInterfaceInfo.UserInterfaceInfoAddRequest;
 import com.mufeng.project.model.dto.userInterfaceInfo.UserInterfaceInfoQueryRequest;
 import com.mufeng.project.model.dto.userInterfaceInfo.UserInterfaceInfoUpdateRequest;
-import com.mufeng.project.model.entity.UserInterfaceInfo;
-import com.mufeng.project.model.entity.User;
-
 import com.mufeng.project.service.UserInterfaceInfoService;
 import com.mufeng.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;
