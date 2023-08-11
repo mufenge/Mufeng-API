@@ -25,14 +25,7 @@ public class NameController {
     }
     @PostMapping("/user")
     public String getUsernameByPost(@RequestBody User user, HttpServletRequest request){
-        String accessKey = user.getUsername();
-        String nonce=request.getHeader("nonce");
-        String timestamp=request.getHeader("timestamp");
-        String sign=request.getHeader("sign");
-        String body=request.getHeader("body");
-        //实际情况根据数据库查询
 
-        //调用成功
         return "Interface: "+ user.getUsername();
     }
 }

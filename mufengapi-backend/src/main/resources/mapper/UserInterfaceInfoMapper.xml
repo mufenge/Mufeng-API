@@ -21,4 +21,8 @@
         status,totalNum,leftNum,
         create_time,update_time,is_deleted
     </sql>
+    <select id="listTopInvoke" resultType="com.mufeng.model.entity.UserInterfaceInfo">
+        select interfaceInfoId, sum(totalNum) as totalNum from user_interface_info group by interfaceInfoId
+        order by totalNum desc limit #{limit};
+    </select>
 </mapper>

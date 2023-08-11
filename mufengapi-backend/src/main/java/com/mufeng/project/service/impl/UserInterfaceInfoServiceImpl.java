@@ -40,9 +40,6 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
         if (status==1) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户已被禁用");
         }
-        if (leftNum<=0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "剩余次数不足");
-        }
     }
 
     @Override

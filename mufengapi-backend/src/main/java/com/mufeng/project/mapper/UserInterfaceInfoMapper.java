@@ -3,6 +3,8 @@ package com.mufeng.project.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mufeng.model.entity.UserInterfaceInfo;
 
+import java.util.List;
+
 /**
 * @author lenovo
 * @description 针对表【user_interface_info(用户调用接口信息)】的数据库操作Mapper
@@ -11,6 +13,7 @@ import com.mufeng.model.entity.UserInterfaceInfo;
 */
 public interface UserInterfaceInfoMapper extends BaseMapper<UserInterfaceInfo> {
 
+    List<UserInterfaceInfo> listTopInvoke(int limit);
 }
 
 

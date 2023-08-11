@@ -103,6 +103,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             return handleNoAuth(response);
         }
 
+
         //6.调用成功，invokeCount；调用失败，返回规范错误码
         if (response.getStatusCode() == HttpStatus.OK) {
             innerUserInterfaceInfoService.invokeCount(interfaceInfo.getId(),invokeUser.getId());
