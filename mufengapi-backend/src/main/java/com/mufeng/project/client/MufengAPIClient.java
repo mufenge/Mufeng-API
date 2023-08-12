@@ -1,15 +1,13 @@
-package com.mufeng.mufengapiclientsdk.client;
+package com.mufeng.project.client;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONUtil;
-import com.mufeng.mufengapiclientsdk.model.User;
+import com.mufeng.model.entity.User;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.mufeng.mufengapiclientsdk.utils.SignUtils.getSign;
 
 /**
  *
@@ -33,7 +31,6 @@ public class MufengAPIClient {
         hashmap.put("timestamp",String.valueOf(System.currentTimeMillis()/1000));
         return hashmap;
     }
-
 
     public String getUsernameByPost(User user){
         String json = JSONUtil.toJsonStr(user);

@@ -1,7 +1,5 @@
 package com.mufeng.project.service.impl;
 
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mufeng.model.entity.User;
@@ -9,6 +7,7 @@ import com.mufeng.project.common.ErrorCode;
 import com.mufeng.project.exception.BusinessException;
 import com.mufeng.project.mapper.UserMapper;
 import com.mufeng.project.service.UserService;
+import com.mufeng.utils.SignUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import static com.mufeng.project.constant.UserConstant.ADMIN_ROLE;
 import static com.mufeng.project.constant.UserConstant.USER_LOGIN_STATE;
+
 
 
 /**
@@ -66,8 +66,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             // 2. 加密
             String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
             // 3.分配ak、sk
-            String accessKey = DigestUtil.md5Hex(SALT + userAccount + RandomUtil.randomNumbers(4));
-            String secretKey = DigestUtil.md5Hex(SALT + userAccount + RandomUtil.randomNumbers(4));
+            String accessKey = SignUtils.genAccessKey(userAccount);
+            String secretKey = SignUtils.genSecretKey(userAccount);
             // 4. 插入数据
             User user = new User();
             user.setUserAccount(userAccount);

@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import com.mufeng.model.entity.User;
 import com.mufeng.model.entity.UserInterfaceInfo;
-import com.mufeng.mufengapiclientsdk.client.MufengAPIClient;
 import com.mufeng.project.annotation.AuthCheck;
 import com.mufeng.project.common.*;
 import com.mufeng.project.constant.CommonConstant;
@@ -36,11 +35,9 @@ import java.util.List;
 @Slf4j
 public class UserInterfaceInfoController {
 
-    @Resource
-    private MufengAPIClient mufengAPIClient;
+
     @Resource
     private UserInterfaceInfoService userInterfaceInfoService;
-
     @Resource
     private UserService userService;
 

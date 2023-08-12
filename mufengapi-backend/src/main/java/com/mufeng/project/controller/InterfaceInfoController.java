@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
 import com.mufeng.model.entity.InterfaceInfo;
 import com.mufeng.model.entity.User;
-import com.mufeng.mufengapiclientsdk.client.MufengAPIClient;
 import com.mufeng.project.annotation.AuthCheck;
+import com.mufeng.project.client.MufengAPIClient;
 import com.mufeng.project.common.*;
 import com.mufeng.project.constant.CommonConstant;
 import com.mufeng.project.exception.BusinessException;
@@ -35,8 +35,6 @@ import java.util.List;
 @Slf4j
 public class InterfaceInfoController {
 
-    @Resource
-    private MufengAPIClient mufengAPIClient;
     @Resource
     private InterfaceInfoService interfaceInfoService;
 
@@ -219,15 +217,6 @@ public class InterfaceInfoController {
         if (oldInterfaceInfo == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        //判断该接口是否可以调用
-        com.mufeng.mufengapiclientsdk.model.User user = new com.mufeng.mufengapiclientsdk.model.User();
-        user.setUsername("asdf");
-        String username = mufengAPIClient.getUsernameByPost(user);
-
-        if (StringUtils.isBlank(username)) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败");
-        }
-        // 仅本人或管理员可修改
         InterfaceInfo interfaceInfo = new InterfaceInfo();
         interfaceInfo.setId(id);
         interfaceInfo.setStatus(InterfaceInfoStatusEnum.ONLINE.getValue());
@@ -288,13 +277,12 @@ public class InterfaceInfoController {
         if (oldInterfaceInfo.getStatus() == InterfaceInfoStatusEnum.OFFLINE.getValue()) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已经关闭");
         }
-
         User loginuser = userService.getLoginUser(request);
         String accessKey = loginuser.getAccessKey();
         String secretKey = loginuser.getSecretKey();
         MufengAPIClient tempclient = new MufengAPIClient(accessKey, secretKey);
         Gson gson = new Gson();
-        com.mufeng.mufengapiclientsdk.model.User user = gson.fromJson(userRequestParams, com.mufeng.mufengapiclientsdk.model.User.class);
+        User user = gson.fromJson(userRequestParams,User.class);
         String usernameByPost = tempclient.getUsernameByPost(user);
         return ResultUtils.success(usernameByPost);
     }

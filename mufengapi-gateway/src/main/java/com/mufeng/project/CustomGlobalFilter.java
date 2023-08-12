@@ -2,10 +2,10 @@ package com.mufeng.project;
 
 import com.mufeng.model.entity.InterfaceInfo;
 import com.mufeng.model.entity.User;
-import com.mufeng.mufengapiclientsdk.utils.SignUtils;
 import com.mufeng.service.InnerInterfaceInfoService;
 import com.mufeng.service.InnerUserInterfaceInfoService;
 import com.mufeng.service.InnerUserService;
+import com.mufeng.utils.SignUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
@@ -67,7 +67,6 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         String accessKey = headers.getFirst("accessKey");
         String nonce = headers.getFirst("nonce");
         String timestamp = headers.getFirst("timestamp");
-        String sign = headers.getFirst("sign");
         String body = headers.getFirst("body");
         User invokeUser = null;
         try {
@@ -87,9 +86,10 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if ((currentTime - Long.parseLong(timestamp)) >= FIVE_MINUTES) {
             return handleNoAuth(response);
         }
+        String userAcount = invokeUser.getUserAccount();
         String secretKey = invokeUser.getSecretKey();
-        String serverSign = SignUtils.getSign(accessKey, secretKey);
-        if (sign == null || !sign.equals(serverSign)) {
+        String serverSign = SignUtils.genSecretKey(userAcount);
+        if (serverSign == null || !secretKey.equals(serverSign)) {
             return handleNoAuth(response);
         }
         //4.判断请求接口信息

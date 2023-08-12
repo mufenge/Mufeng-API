@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.mufeng</groupId>
             <artifactId>mufengapi-common</artifactId>
-            <version>0.0.2</version>
+            <version>0.0.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
@@ -47,11 +47,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.mufeng</groupId>
-            <artifactId>mufengapi-client-sdk</artifactId>
-            <version>0.0.3</version>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
