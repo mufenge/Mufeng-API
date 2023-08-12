@@ -7,9 +7,9 @@ spring:
     gateway:
       routes:
         - id: api_route
-          uri: http://localhost:8123
+          uri: http://localhost:7529
           predicates:
-            - Path=/api/**
+            - Path=/api/name/user
 dubbo:
   application:
     name: mufengapi-gateway

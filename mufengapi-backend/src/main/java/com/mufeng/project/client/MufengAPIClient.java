@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author Mufeng
  */
 public class MufengAPIClient {
@@ -24,18 +23,19 @@ public class MufengAPIClient {
         this.secretKey = secretKey;
     }
 
-    private Map<String,String> getHeaderMap(String body){
+    private Map<String, String> getHeaderMap(String userAccount) {
         Map<String, String> hashmap = new HashMap<>();
         hashmap.put("nonce", RandomUtil.randomNumbers(4));
-        hashmap.put("body",body);
-        hashmap.put("timestamp",String.valueOf(System.currentTimeMillis()/1000));
+        hashmap.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000));
+        hashmap.put("userAccount", userAccount);
         return hashmap;
     }
 
-    public String getUsernameByPost(User user){
+    public String getUsernameByPost(User user) {
         String json = JSONUtil.toJsonStr(user);
-        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST+"/api/name/user")
-                .addHeaders(getHeaderMap(json))
+        String userAccount = user.getUserAccount();
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/name/user")
+                .addHeaders(getHeaderMap(userAccount))
                 .body(json)
                 .execute();
         return httpResponse.body();

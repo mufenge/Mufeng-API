@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.mufeng</groupId>
             <artifactId>mufengapi-common</artifactId>
-            <version>0.0.4</version>
+            <version>0.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>

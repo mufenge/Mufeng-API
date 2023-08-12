@@ -1,10 +1,6 @@
 package com.mufeng.mufengapiinterface.controller;
 
-
-import com.mufeng.mufengapiclientsdk.model.User;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Mufeng
@@ -13,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/name")
 public class NameController {
     @PostMapping("/user")
-    public String getUsernameByPost(@RequestBody User user, HttpServletRequest request){
+    public String getUsernameByPost(@RequestBody User user){
 
         return "Interface: "+ user.getUsername();
     }

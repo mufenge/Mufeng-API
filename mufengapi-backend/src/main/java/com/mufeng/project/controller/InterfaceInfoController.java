@@ -281,9 +281,7 @@ public class InterfaceInfoController {
         String accessKey = loginuser.getAccessKey();
         String secretKey = loginuser.getSecretKey();
         MufengAPIClient tempclient = new MufengAPIClient(accessKey, secretKey);
-        Gson gson = new Gson();
-        User user = gson.fromJson(userRequestParams,User.class);
-        String usernameByPost = tempclient.getUsernameByPost(user);
+        String usernameByPost = tempclient.getUsernameByPost(loginuser);
         return ResultUtils.success(usernameByPost);
     }
 }

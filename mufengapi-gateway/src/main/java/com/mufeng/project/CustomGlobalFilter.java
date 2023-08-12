@@ -20,8 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 全局过滤器
@@ -39,45 +37,37 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     private InnerInterfaceInfoService innerInterfaceInfoService;
     @DubboReference
     private InnerUserInterfaceInfoService innerUserInterfaceInfoService;
-    private static final List<String> IP_WHITE_LIST = Arrays.asList("127.0.0.1");
+    private static final String INTERFACE_HOST = "http://localhost:7529";
 
-    private static final String INTERFACE_HOST = "http://localhost:8123";
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        //实现业务逻辑
-
         //1.请求日志
         ServerHttpRequest request = exchange.getRequest();
-        String path =  INTERFACE_HOST + request.getPath().value();
+        String path = INTERFACE_HOST + request.getPath().value();
         String method = request.getMethod().toString();
-        log.info("请求唯一标识:" + request.getId());
         log.info("请求路径:" + path);
         log.info("请求方法:" + method);
         log.info("请求参数:" + request.getQueryParams());
         log.info("请求来源地址:" + request.getRemoteAddress());
-        String address = request.getLocalAddress().getHostString();
-        log.info("请求来源地址:" + request.getLocalAddress().getHostString());
         ServerHttpResponse response = exchange.getResponse();
         //2.黑白名单
-        if (!IP_WHITE_LIST.contains(address)) {
-            return handleNoAuth(response);
-        }
         //3.用户鉴权
         HttpHeaders headers = request.getHeaders();
-        String accessKey = headers.getFirst("accessKey");
         String nonce = headers.getFirst("nonce");
         String timestamp = headers.getFirst("timestamp");
-        String body = headers.getFirst("body");
+        String userAccount = headers.getFirst("userAccount");
         User invokeUser = null;
         try {
-            invokeUser = innerUserService.getInvokeUser(accessKey);
+            invokeUser = innerUserService.getInvokeUser(userAccount);
         } catch (Exception e) {
             log.error("getError");
         }
         if (invokeUser == null) {
             return handleNoAuth(response);
         }
-        //超时时间5分钟
+
+        //设置超时时间5分钟
         if (Long.parseLong(nonce) > 10000L) {
             return handleNoAuth(response);
         }
@@ -86,16 +76,19 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if ((currentTime - Long.parseLong(timestamp)) >= FIVE_MINUTES) {
             return handleNoAuth(response);
         }
-        String userAcount = invokeUser.getUserAccount();
-        String secretKey = invokeUser.getSecretKey();
-        String serverSign = SignUtils.genSecretKey(userAcount);
-        if (serverSign == null || !secretKey.equals(serverSign)) {
+        //API签名认证
+        String invokeUserAccount = invokeUser.getUserAccount();
+        String invokeAccessKey = invokeUser.getAccessKey();
+        String invokeSecretKey = invokeUser.getSecretKey();
+        String serverAccessKey = SignUtils.genAccessKey(invokeUserAccount);
+        String serverSecretKey = SignUtils.genSecretKey(invokeUserAccount);
+        if (!invokeAccessKey.equals(serverAccessKey)||!invokeSecretKey.equals(serverSecretKey)) {
             return handleNoAuth(response);
         }
         //4.判断请求接口信息
         InterfaceInfo interfaceInfo = null;
         try {
-            interfaceInfo = innerInterfaceInfoService.getInterfaceInfo(path,method);
+            interfaceInfo = innerInterfaceInfoService.getInterfaceInfo(path, method);
         } catch (Exception e) {
             log.error("getError");
         }
@@ -103,10 +96,9 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             return handleNoAuth(response);
         }
 
-
-        //6.调用成功，invokeCount；调用失败，返回规范错误码
+        //6.调用成功，invokeCount，输出响应日志；调用失败，返回规范错误码
         if (response.getStatusCode() == HttpStatus.OK) {
-            innerUserInterfaceInfoService.invokeCount(interfaceInfo.getId(),invokeUser.getId());
+            innerUserInterfaceInfoService.invokeCount(interfaceInfo.getId(), invokeUser.getId());
             log.info("响应结果：" + response.getStatusCode());
         } else {
             return handleInvokeError(response);
@@ -128,4 +120,5 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
         return response.setComplete();
     }
+
 }

@@ -3,7 +3,7 @@ import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import { userLoginUsingPOST } from '@/services/mufengapi-backend/userController';
 import {
   LockOutlined,
-  MobileOutlined,
+  MailOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import {
@@ -149,10 +149,10 @@ const Login: React.FC = () => {
                 }),
               },
               {
-                key: 'mobile',
+                key: 'emile',
                 label: intl.formatMessage({
                   id: 'pages.login.phoneLogin.tab',
-                  defaultMessage: '手机号登录',
+                  defaultMessage: '邮箱登录',
                 }),
               },
             ]}
@@ -162,7 +162,7 @@ const Login: React.FC = () => {
             <LoginMessage
               content={intl.formatMessage({
                 id: 'pages.login.accountLogin.errorMessage',
-                defaultMessage: '账户或密码错误(admin/ant.design)',
+                defaultMessage: '账户或密码错误!',
               })}
             />
           )}
@@ -215,18 +215,18 @@ const Login: React.FC = () => {
             </>
           )}
 
-          {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
-          {type === 'mobile' && (
+          {status === 'error' && loginType === 'emile' && <LoginMessage content="验证码错误" />}
+          {type === 'emile' && (
             <>
               <ProFormText
                 fieldProps={{
                   size: 'large',
-                  prefix: <MobileOutlined />,
+                  prefix: <MailOutlined />,
                 }}
-                name="mobile"
+                name="emile"
                 placeholder={intl.formatMessage({
                   id: 'pages.login.phoneNumber.placeholder',
-                  defaultMessage: '手机号',
+                  defaultMessage: '邮箱号',
                 })}
                 rules={[
                   {
@@ -234,7 +234,7 @@ const Login: React.FC = () => {
                     message: (
                       <FormattedMessage
                         id="pages.login.phoneNumber.required"
-                        defaultMessage="请输入手机号！"
+                        defaultMessage="请输入邮箱号！"
                       />
                     ),
                   },
@@ -243,7 +243,7 @@ const Login: React.FC = () => {
                     message: (
                       <FormattedMessage
                         id="pages.login.phoneNumber.invalid"
-                        defaultMessage="手机号格式错误！"
+                        defaultMessage="邮箱号格式错误！"
                       />
                     ),
                   },
