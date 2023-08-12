@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import { Question, SelectLang } from '@/components/RightContent';
+import { SelectLang } from '@/components/RightContent';
 import { LinkOutlined } from '@ant-design/icons';
 import { SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
@@ -35,17 +35,15 @@ export async function getInitialState(): Promise<InitialState> {
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
     layout: 'top',
-    actionsRender: () => [<Question key="doc" />, <SelectLang key="SelectLang" />],
+    actionsRender: () => [<SelectLang key="SelectLang" />],
     avatarProps: {
-      src: initialState?.loginUser?.userName,
+      src: initialState?.loginUser?.userAccount,
       title: <AvatarName />,
       render: (_, avatarChildren) => {
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
     },
-    waterMarkProps: {
-      content: initialState?.loginUser?.userName,
-    },
+
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;

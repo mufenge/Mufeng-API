@@ -24,7 +24,6 @@ const Index: React.FC = () => {
     } catch (error) {
       message.error('加载数据失败');
     }
-
     setLoading(false);
   };
   useEffect(() => {
@@ -59,7 +58,7 @@ const Index: React.FC = () => {
           showTotal(total) {
             return '总数:' + total;
           },
-          pageSize: 5,
+          pageSize: 7,
           total,
           onChange(page, pageSize) {
             loadData(page, pageSize);

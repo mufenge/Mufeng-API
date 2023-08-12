@@ -1,11 +1,11 @@
 import { PageContainer } from '@ant-design/pro-components';
 import ReactECharts from 'echarts-for-react';
 import React, {useEffect, useState} from 'react';
-import {listTopInvokeUsingGET} from "../../../services/mufengapi-backend/analysisController";
+import {listTopInvokeUsingGET} from "@/services/mufengapi-backend/analysisController";
 
 const InterfaceAnalysis: React.FC = () => {
   const [data,setData] = useState<API.InterfaceInfoVO[]>([]);
-  const [loading,setLoading] = useState(true)
+  const [loading] = useState(true)
   useEffect(()=>{
     try {
 
@@ -42,7 +42,7 @@ const InterfaceAnalysis: React.FC = () => {
     },
     series: [
       {
-        name: 'Access From',
+        name: '接口信息',
         type: 'pie',
         radius: '50%',
         data: chartData,
