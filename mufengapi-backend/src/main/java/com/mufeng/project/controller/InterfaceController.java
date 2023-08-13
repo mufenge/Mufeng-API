@@ -63,4 +63,34 @@ public class InterfaceController {
         String invokeCommonInterface = tempClient.getRandomImage(userRequestParams,loginuser.getUserAccount());
         return ResultUtils.success(invokeCommonInterface);
     }
+    /**
+     * 随机图片接口调用
+     *
+     * @param interfaceInfoInvokeRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/getRandomWords")
+    public BaseResponse<String> invokeRandomWordsInterface(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
+                                                      HttpServletRequest request) {
+
+        if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long id = interfaceInfoInvokeRequest.getId();
+
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        if (oldInterfaceInfo.getStatus() == InterfaceInfoStatusEnum.OFFLINE.getValue()) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已经关闭");
+        }
+        User loginuser = userService.getLoginUser(request);
+        String userRequestParams = interfaceInfoInvokeRequest.getUserRequestParams();
+        MufengAPIClient tempClient = new MufengAPIClient(userRequestParams);
+        String invokeCommonInterface = tempClient.getRandomWords(userRequestParams,loginuser.getUserAccount());
+        return ResultUtils.success(invokeCommonInterface);
+    }
 }

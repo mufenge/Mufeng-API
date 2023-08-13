@@ -2,11 +2,15 @@ import {
   getInterfaceInfoByIdUsingGET,
   invokeInterfaceInfoUsingPOST,
 } from '@/services/mufengapi-backend/interfaceInfoController';
-import { useParams } from '@@/exports';
 import { PageContainer } from '@ant-design/pro-components';
 import {Button, Card, Descriptions, Form, message} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useEffect, useState } from 'react';
+import {
+  invokeCommonInterfaceUsingPOST,
+  invokeRandomWordsInterfaceUsingPOST
+} from "@/services/mufengapi-backend/interfaceController";
+import {useParams} from "react-router";
 
 /**
  * 接口文档
@@ -17,6 +21,7 @@ const Index: React.FC = () => {
   const [data, setData] = useState<API.InterfaceInfo>();
   const [invokeLoading, setInvokeLoading] = useState(false);
   const params = useParams();
+
   const [invokeRes, setinvokeRes] = useState<any>();
   const loadData = async () => {
     if (!params.id) {
@@ -37,28 +42,67 @@ const Index: React.FC = () => {
   useEffect(() => {
     loadData();
   }, []);
+
   const onFinish = async (values: any) => {
     if (!params.id) {
       message.error('接口不存在');
       return;
     }
     setInvokeLoading(true);
-    try {
-      const res = await invokeInterfaceInfoUsingPOST({
-        id: params.id,
-        ...values,
-      });
-      setinvokeRes(res.data);
-      message.success('请求成功');
-    } catch (error:any) {
-      message.error('操作失败');
-      return false;
+
+    // @ts-ignore
+    let interfaceId = data.id;
+    if (interfaceId === 3){
+      try {
+        const res = await invokeInterfaceInfoUsingPOST({
+          id: params.id,
+          ...values,
+        });
+
+        setinvokeRes(res.data);
+        message.success('请求成功');
+      } catch (error:any) {
+        message.error('操作失败');
+        return false;
+      }
+      setInvokeLoading(false);
     }
-    setInvokeLoading(false);
-  };
+    if (interfaceId === 2){
+      try {
+        const res = await invokeCommonInterfaceUsingPOST({
+          id: params.id,
+          ...values,
+        });
+        setinvokeRes(res.data);
+        message.success('请求成功');
+      } catch (error:any) {
+        message.error('操作失败');
+        return false;
+      }
+      setInvokeLoading(false);
+    }
+    if (interfaceId === 18){
+      try {
+        const res = await invokeRandomWordsInterfaceUsingPOST({
+          id: params.id,
+          ...values,
+        });
+        setinvokeRes(res.data);
+        message.success('请求成功');
+      } catch (error:any) {
+        message.error('操作失败');
+        return false;
+      }
+      setInvokeLoading(false);
+    }
+
+
+    }
+
+
 
   return (
-    <PageContainer title={'查看接口文档'}>
+    <PageContainer title={'接口文档'}>
       <Card>
         {data ? (
           <Descriptions title={data.name} column={1} extra={<Button>调用</Button>}>
@@ -89,7 +133,8 @@ const Index: React.FC = () => {
           </Form.Item>
         </Form>
       </Card>
-      <Card title="调用接口" loading={invokeLoading}>
+      <img  src={invokeRes}/>
+      <Card title="返回信息" loading={invokeLoading}>
         {invokeRes}
       </Card>
     </PageContainer>

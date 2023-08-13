@@ -56,4 +56,12 @@ public class MufengAPIClient {
                 .execute();
         return httpResponse.header(Header.LOCATION);
     }
+    public String getRandomWords(String params,String userAccount){
+        String json = JSONUtil.toJsonStr(params);
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/interface/getRandomWords")
+                .addHeaders(getHeaderParams(params,userAccount))
+                .body(json)
+                .execute();
+        return httpResponse.body();
+    }
 }

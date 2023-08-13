@@ -2,8 +2,6 @@ server:
   port: 8090
 spring:
   cloud:
-    main:
-      web-application-type: reactive
     gateway:
       routes:
         - id: api_route
@@ -16,6 +14,12 @@ spring:
             - Path=/api/interface/getRandomImage
           filters:
             - SetPath=/sjbz/api.php
+        - id: api_route3
+          uri: https://v2.alapi.cn
+          predicates:
+            - Path=/api/interface/getRandomWords
+          filters:
+            - SetPath=/api/soul?format=json&token=H3HVyW1yhW0cNQRL
 dubbo:
   application:
     name: mufengapi-gateway
