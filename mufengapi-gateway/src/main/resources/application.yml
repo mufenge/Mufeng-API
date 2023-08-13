@@ -10,6 +10,12 @@ spring:
           uri: http://localhost:7529
           predicates:
             - Path=/api/name/user
+        - id: api_route2
+          uri: https://api.btstu.cn
+          predicates:
+            - Path=/api/interface/getRandomImage
+          filters:
+            - SetPath=/sjbz/api.php
 dubbo:
   application:
     name: mufengapi-gateway

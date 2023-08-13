@@ -262,7 +262,7 @@ public class InterfaceInfoController {
      */
     @PostMapping("/invoke")
     public BaseResponse<String> invokeInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
-                                                      HttpServletRequest request) {
+                                                    HttpServletRequest request) {
 
         if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -278,10 +278,8 @@ public class InterfaceInfoController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已经关闭");
         }
         User loginuser = userService.getLoginUser(request);
-        String accessKey = loginuser.getAccessKey();
-        String secretKey = loginuser.getSecretKey();
-        MufengAPIClient tempclient = new MufengAPIClient(accessKey, secretKey);
-        String usernameByPost = tempclient.getUsernameByPost(loginuser);
+        MufengAPIClient tempClient = new MufengAPIClient(userRequestParams);
+        String usernameByPost = tempClient.getUsernameByPost(loginuser);
         return ResultUtils.success(usernameByPost);
     }
 }

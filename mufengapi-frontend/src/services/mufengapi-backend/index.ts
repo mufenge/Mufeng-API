@@ -4,15 +4,17 @@
 // API 唯一标识：
 import * as analysisController from './analysisController';
 import * as basicErrorController from './basicErrorController';
+import * as interfaceController from './interfaceController';
 import * as interfaceInfoController from './interfaceInfoController';
-import * as postController from './postController';
+import * as nameController from './nameController';
 import * as userController from './userController';
 import * as userInterfaceInfoController from './userInterfaceInfoController';
 export default {
   analysisController,
   basicErrorController,
+  interfaceController,
   interfaceInfoController,
-  postController,
+  nameController,
   userController,
   userInterfaceInfoController,
 };

@@ -66,7 +66,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if (invokeUser == null) {
             return handleNoAuth(response);
         }
-
+        log.info("请求用户" + userAccount);
         //设置超时时间5分钟
         if (Long.parseLong(nonce) > 10000L) {
             return handleNoAuth(response);
@@ -85,6 +85,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if (!invokeAccessKey.equals(serverAccessKey)||!invokeSecretKey.equals(serverSecretKey)) {
             return handleNoAuth(response);
         }
+        log.info("API认证成功！");
         //4.判断请求接口信息
         InterfaceInfo interfaceInfo = null;
         try {
@@ -96,10 +97,10 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             return handleNoAuth(response);
         }
 
-        //6.调用成功，invokeCount，输出响应日志；调用失败，返回规范错误码
+        //5.调用成功，invokeCount，输出响应日志；调用失败，返回规范错误码
         if (response.getStatusCode() == HttpStatus.OK) {
             innerUserInterfaceInfoService.invokeCount(interfaceInfo.getId(), invokeUser.getId());
-            log.info("响应结果：" + response.getStatusCode());
+            log.info("调用成功，响应结果：" + response.getStatusCode());
         } else {
             return handleInvokeError(response);
         }

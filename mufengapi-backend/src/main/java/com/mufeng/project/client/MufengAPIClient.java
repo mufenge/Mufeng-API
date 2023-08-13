@@ -1,8 +1,10 @@
 package com.mufeng.project.client;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import com.mufeng.model.entity.User;
 
@@ -15,12 +17,10 @@ import java.util.Map;
 public class MufengAPIClient {
 
     private static final String GATEWAY_HOST = "http://localhost:8090";
-    private String accessKey;
-    private String secretKey;
+    private String userRequestParams;
 
-    public MufengAPIClient(String accessKey, String secretKey) {
-        this.accessKey = accessKey;
-        this.secretKey = secretKey;
+    public MufengAPIClient(String userRequestParams) {
+        this.userRequestParams = userRequestParams;
     }
 
     private Map<String, String> getHeaderMap(String userAccount) {
@@ -28,6 +28,14 @@ public class MufengAPIClient {
         hashmap.put("nonce", RandomUtil.randomNumbers(4));
         hashmap.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000));
         hashmap.put("userAccount", userAccount);
+        return hashmap;
+    }
+    private Map<String, String> getHeaderParams(String params,String userAccount) {
+        Map<String, String> hashmap = new HashMap<>();
+        hashmap.put("nonce", RandomUtil.randomNumbers(4));
+        hashmap.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000));
+        hashmap.put("userAccount", userAccount);
+        hashmap.put("params", params);
         return hashmap;
     }
 
@@ -39,5 +47,13 @@ public class MufengAPIClient {
                 .body(json)
                 .execute();
         return httpResponse.body();
+    }
+    public String getRandomImage(String params,String userAccount){
+        String json = JSONUtil.toJsonStr(params);
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/interface/getRandomImage")
+                .addHeaders(getHeaderParams(params,userAccount))
+                .body(json)
+                .execute();
+        return httpResponse.header(Header.LOCATION);
     }
 }

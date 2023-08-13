@@ -14,6 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class NameController {
     @PostMapping("/user")
     public String getUsernameByPost(@RequestBody User user){
-        return "Interface: "+ user.getUserAccount();
+        return "用户名: "+ user.getUserAccount();
     }
 }
