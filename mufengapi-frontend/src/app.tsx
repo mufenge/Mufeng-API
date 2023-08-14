@@ -16,7 +16,7 @@ const loginPath = '/user/login';
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 export async function getInitialState(): Promise<InitialState> {
-  //页面首次加载是，获取全局保存的信息
+  //页面首次加载，获取全局保存的信息
   const state: InitialState = {
     loginUser: undefined,
   }

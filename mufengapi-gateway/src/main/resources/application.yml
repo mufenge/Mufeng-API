@@ -20,6 +20,12 @@ spring:
             - Path=/api/interface/getRandomWords
           filters:
             - SetPath=/api/soul?format=json&token=H3HVyW1yhW0cNQRL
+        - id: api_route4
+          uri: https://api.btstu.cn
+          predicates:
+            - Path=/api/interface/getQueryICP
+          filters:
+            - SetPath=/icp/api.php
 dubbo:
   application:
     name: mufengapi-gateway

@@ -1,16 +1,17 @@
 import {
+  invokeCommonInterfaceUsingPOST,
+  invokeQueryICPInterfaceUsingPOST,
+  invokeRandomWordsInterfaceUsingPOST,
+} from '@/services/mufengapi-backend/interfaceController';
+import {
   getInterfaceInfoByIdUsingGET,
   invokeInterfaceInfoUsingPOST,
 } from '@/services/mufengapi-backend/interfaceInfoController';
 import { PageContainer } from '@ant-design/pro-components';
-import {Button, Card, Descriptions, Form, message} from 'antd';
+import {Button, Card, Descriptions, Form, message, Tag} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useEffect, useState } from 'react';
-import {
-  invokeCommonInterfaceUsingPOST,
-  invokeRandomWordsInterfaceUsingPOST
-} from "@/services/mufengapi-backend/interfaceController";
-import {useParams} from "react-router";
+import { useParams } from 'react-router';
 
 /**
  * 接口文档
@@ -52,22 +53,21 @@ const Index: React.FC = () => {
 
     // @ts-ignore
     let interfaceId = data.id;
-    if (interfaceId === 3){
+    if (interfaceId === 1) {
       try {
-        const res = await invokeInterfaceInfoUsingPOST({
+        const res = await invokeQueryICPInterfaceUsingPOST({
           id: params.id,
           ...values,
         });
-
         setinvokeRes(res.data);
         message.success('请求成功');
-      } catch (error:any) {
+      } catch (error: any) {
         message.error('操作失败');
         return false;
       }
       setInvokeLoading(false);
     }
-    if (interfaceId === 2){
+    if (interfaceId === 2) {
       try {
         const res = await invokeCommonInterfaceUsingPOST({
           id: params.id,
@@ -75,13 +75,27 @@ const Index: React.FC = () => {
         });
         setinvokeRes(res.data);
         message.success('请求成功');
-      } catch (error:any) {
+      } catch (error: any) {
         message.error('操作失败');
         return false;
       }
       setInvokeLoading(false);
     }
-    if (interfaceId === 18){
+    if (interfaceId === 3) {
+      try {
+        const res = await invokeInterfaceInfoUsingPOST({
+          id: params.id,
+          ...values,
+        });
+        setinvokeRes(res.data);
+        message.success('请求成功');
+      } catch (error: any) {
+        message.error('操作失败');
+        return false;
+      }
+      setInvokeLoading(false);
+    }
+    if (interfaceId === 4) {
       try {
         const res = await invokeRandomWordsInterfaceUsingPOST({
           id: params.id,
@@ -89,7 +103,7 @@ const Index: React.FC = () => {
         });
         setinvokeRes(res.data);
         message.success('请求成功');
-      } catch (error:any) {
+      } catch (error: any) {
         message.error('操作失败');
         return false;
       }
@@ -97,16 +111,15 @@ const Index: React.FC = () => {
     }
 
 
-    }
 
-
+  };
 
   return (
     <PageContainer title={'接口文档'}>
       <Card>
         {data ? (
-          <Descriptions title={data.name} column={1} extra={<Button>调用</Button>}>
-            <Descriptions.Item label="接口状态">{data.status ? '正常' : '关闭'}</Descriptions.Item>
+          <Descriptions title={data.name} column={2}>
+            <Descriptions.Item label="接口状态">{!data.status ? <Tag color="red">禁用</Tag> : <Tag color="green">正常</Tag>}</Descriptions.Item>
             <Descriptions.Item label="描述">{data.description}</Descriptions.Item>
             <Descriptions.Item label="请求地址">{data.url}</Descriptions.Item>
             <Descriptions.Item label="请求方法">{data.method}</Descriptions.Item>
@@ -133,7 +146,7 @@ const Index: React.FC = () => {
           </Form.Item>
         </Form>
       </Card>
-      <img  src={invokeRes}/>
+      <img src={invokeRes} />
       <Card title="返回信息" loading={invokeLoading}>
         {invokeRes}
       </Card>

@@ -18,6 +18,7 @@ import { Alert, message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import Settings from '../../../../config/defaultSettings';
 import {flushSync} from "react-dom";
+import {Link} from "@@/exports";
 
 const Lang = () => {
   const langClassName = useEmotionCss(({ token }) => {
@@ -145,7 +146,7 @@ const Login: React.FC = () => {
                 key: 'account',
                 label: intl.formatMessage({
                   id: 'pages.login.accountLogin.tab',
-                  defaultMessage: '账户密码登录',
+                  defaultMessage: '账号密码登录',
                 }),
               },
               {
@@ -305,13 +306,14 @@ const Login: React.FC = () => {
             <ProFormCheckbox noStyle name="autoLogin">
               <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
             </ProFormCheckbox>
-            <a
+            <Link
               style={{
-                float: 'right',
+                float: 'right'
               }}
+              to={'/user/register'}
             >
-              <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码" />
-            </a>
+              没有账号？点击注册
+            </Link>
           </div>
         </LoginForm>
       </div>

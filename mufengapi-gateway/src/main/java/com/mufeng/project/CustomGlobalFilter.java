@@ -93,6 +93,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         } catch (Exception e) {
             log.error("getError");
         }
+
         if (interfaceInfo == null) {
             return handleNoAuth(response);
         }

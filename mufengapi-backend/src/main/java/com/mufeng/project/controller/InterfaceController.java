@@ -64,7 +64,7 @@ public class InterfaceController {
         return ResultUtils.success(invokeCommonInterface);
     }
     /**
-     * 随机图片接口调用
+     * 随机一句话接口调用
      *
      * @param interfaceInfoInvokeRequest
      * @param request
@@ -91,6 +91,36 @@ public class InterfaceController {
         String userRequestParams = interfaceInfoInvokeRequest.getUserRequestParams();
         MufengAPIClient tempClient = new MufengAPIClient(userRequestParams);
         String invokeCommonInterface = tempClient.getRandomWords(userRequestParams,loginuser.getUserAccount());
+        return ResultUtils.success(invokeCommonInterface);
+    }
+    /**
+     * 查询ICP接口调用
+     *
+     * @param interfaceInfoInvokeRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/getQueryICP")
+    public BaseResponse<String> invokeQueryICPInterface(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
+                                                           HttpServletRequest request) {
+
+        if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long id = interfaceInfoInvokeRequest.getId();
+
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        if (oldInterfaceInfo.getStatus() == InterfaceInfoStatusEnum.OFFLINE.getValue()) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已经关闭");
+        }
+        User loginuser = userService.getLoginUser(request);
+        String userRequestParams = interfaceInfoInvokeRequest.getUserRequestParams();
+        MufengAPIClient tempClient = new MufengAPIClient(userRequestParams);
+        String invokeCommonInterface = tempClient.getQueryICP(userRequestParams,loginuser.getUserAccount());
         return ResultUtils.success(invokeCommonInterface);
     }
 }

@@ -4,7 +4,6 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import com.mufeng.model.entity.User;
 
@@ -59,6 +58,14 @@ public class MufengAPIClient {
     public String getRandomWords(String params,String userAccount){
         String json = JSONUtil.toJsonStr(params);
         HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/interface/getRandomWords")
+                .addHeaders(getHeaderParams(params,userAccount))
+                .body(json)
+                .execute();
+        return httpResponse.body();
+    }
+    public String getQueryICP(String params,String userAccount){
+        String json = JSONUtil.toJsonStr(params);
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/interface/getQueryICP")
                 .addHeaders(getHeaderParams(params,userAccount))
                 .body(json)
                 .execute();
