@@ -25,4 +25,7 @@
         select interfaceInfoId, sum(totalNum) as totalNum from user_interface_info group by interfaceInfoId
         order by totalNum desc limit #{limit};
     </select>
+    <select id="getUserInvokeInfo" resultType="com.mufeng.model.entity.UserInterfaceInfo">
+        select status,interfaceInfoId,totalNum,leftNum from user_interface_info where userId = #{userId};
+    </select>
 </mapper>

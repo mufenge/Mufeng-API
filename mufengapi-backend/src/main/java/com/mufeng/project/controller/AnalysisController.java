@@ -55,7 +55,6 @@ public class AnalysisController {
             BeanUtils.copyProperties(interfaceInfo, interfaceInfoVO);
             int totalNum = interfaceInfoIdObjMap.get(interfaceInfo.getId()).get(0).getTotalNum();
             interfaceInfoVO.setTotalNum(totalNum);
-            System.out.println(totalNum);
             return interfaceInfoVO;
         }).collect(Collectors.toList());
         return ResultUtils.success(interfaceInfoVOList);

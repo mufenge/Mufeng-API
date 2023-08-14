@@ -57,6 +57,12 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
         return update;
     }
 
+    @Override
+    public boolean getInvokeUserInfo(long userId) {
+
+        return false;
+    }
+
 }
 
 

@@ -194,7 +194,6 @@ public class InterfaceInfoController {
         return ResultUtils.success(interfaceInfoPage);
     }
 
-    // endregion
 
     /**
      * 发布
@@ -282,4 +281,7 @@ public class InterfaceInfoController {
         String usernameByPost = tempClient.getUsernameByPost(loginuser);
         return ResultUtils.success(usernameByPost);
     }
+
+    // endregion
+
 }

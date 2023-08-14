@@ -22,7 +22,6 @@ const Index: React.FC = () => {
   const [data, setData] = useState<API.InterfaceInfo>();
   const [invokeLoading, setInvokeLoading] = useState(false);
   const params = useParams();
-
   const [invokeRes, setinvokeRes] = useState<any>();
   const loadData = async () => {
     if (!params.id) {
@@ -110,8 +109,6 @@ const Index: React.FC = () => {
       setInvokeLoading(false);
     }
 
-
-
   };
 
   return (
@@ -120,6 +117,7 @@ const Index: React.FC = () => {
         {data ? (
           <Descriptions title={data.name} column={2}>
             <Descriptions.Item label="接口状态">{!data.status ? <Tag color="red">禁用</Tag> : <Tag color="green">正常</Tag>}</Descriptions.Item>
+            <Descriptions.Item label="接口Id">{data.id}</Descriptions.Item>
             <Descriptions.Item label="描述">{data.description}</Descriptions.Item>
             <Descriptions.Item label="请求地址">{data.url}</Descriptions.Item>
             <Descriptions.Item label="请求方法">{data.method}</Descriptions.Item>

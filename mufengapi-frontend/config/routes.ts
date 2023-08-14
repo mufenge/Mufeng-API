@@ -1,6 +1,7 @@
 export default [
   { path: '/', name: '主页', icon: 'smile', component: './Index' },
-  { path: '/user/center', name: '个人中心', icon: 'user', component: './User/Center' },
+  { path: '/user/center', name: '个人接口信息', icon: 'user', component: './User/Center' },
+  { path: '/user/account', name: '个人账号信息', icon: 'user', component: './User/Account' },
   {
     path: '/interface_info/:id',
     name: '查看接口',

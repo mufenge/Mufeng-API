@@ -77,6 +77,17 @@ export async function listUserInterfaceInfoByPageUsingGET(
   });
 }
 
+/** getInvokeUserInfo GET /api/userInterfaceInfo/listInvokeUserInfo */
+export async function getInvokeUserInfoUsingGET(options?: { [key: string]: any }) {
+  return request<API.BaseResponseListUserInterfaceInfo>(
+    '/api/userInterfaceInfo/listInvokeUserInfo',
+    {
+      method: 'GET',
+      ...(options || {}),
+    },
+  );
+}
+
 /** updateUserInterfaceInfo POST /api/userInterfaceInfo/update */
 export async function updateUserInterfaceInfoUsingPOST(
   body: API.UserInterfaceInfoUpdateRequest,

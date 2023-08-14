@@ -11,17 +11,13 @@ import {
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
-  FooterToolbar,
   ModalForm,
   PageContainer,
   ProDescriptions,
-  ProFormText,
-  ProFormTextArea,
   ProTable,
 } from '@ant-design/pro-components';
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { Button, Drawer, message } from 'antd';
-import { SortOrder } from 'antd/lib/table/interface';
 import React, { useRef, useState } from 'react';
 
 const TableList: React.FC = () => {
@@ -35,12 +31,9 @@ const TableList: React.FC = () => {
    * @zh-CN 分布更新窗口的弹窗
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
 
   /**
    *  Delete node
@@ -56,7 +49,7 @@ const TableList: React.FC = () => {
         id: record.id,
       });
       hide();
-      message.success('删除成功，请稍等！');
+      message.success('删除成功！');
       actionRef.current?.reload();
       return true;
     } catch (error) {
@@ -114,7 +107,7 @@ const TableList: React.FC = () => {
   };
   /**
    * @en-US Update node
-   * @zh-CN 更新节点
+   * @zh-CN 修改接口
    *
    * @param fields
    */
@@ -138,7 +131,7 @@ const TableList: React.FC = () => {
 
   /**
    * @en-US Add node
-   * @zh-CN 添加节点
+   * @zh-CN 添加接口
    * @param fields
    */
   const handleAdd = async (fields: API.InterfaceInfo) => {
@@ -199,17 +192,17 @@ const TableList: React.FC = () => {
     {
       title: '请求参数',
       dataIndex: 'requestParams',
-      valueType: 'jsonCode',
+      valueType: 'text',
     },
     {
       title: '请求头',
       dataIndex: 'requestHeader',
-      valueType: 'jsonCode',
+      valueType: 'text',
     },
     {
       title: '响应头',
       dataIndex: 'responseHeader',
-      valueType: 'jsonCode',
+      valueType: 'text',
     },
     {
       title: '状态',
@@ -293,7 +286,7 @@ const TableList: React.FC = () => {
       <ProTable<API.RuleListItem, API.PageParams>
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
-          defaultMessage: '查询表格',
+          defaultMessage: '接口列表',
         })}
         actionRef={actionRef}
         rowKey="key"
@@ -311,11 +304,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="新建" />
           </Button>,
         ]}
-        request={async (
-          params,
-          sort: Record<string, SortOrder>,
-          filter: Record<string, (string | number)[] | null>,
-        ) => {
+        request={async (params) => {
           const res: any = await listInterfaceInfoByPageUsingGET({
             ...params,
           });
@@ -334,51 +323,8 @@ const TableList: React.FC = () => {
           }
         }}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Chosen" />{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
-              &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id="pages.searchTable.totalServiceCalls"
-                  defaultMessage="Total number of service calls"
-                />{' '}
-                {selectedRowsState.reduce((pre, item) => pre + item.callNo!, 0)}{' '}
-                <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
-              </span>
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            <FormattedMessage
-              id="pages.searchTable.batchDeletion"
-              defaultMessage="Batch deletion"
-            />
-          </Button>
-          <Button type="primary">
-            <FormattedMessage
-              id="pages.searchTable.batchApproval"
-              defaultMessage="Batch approval"
-            />
-          </Button>
-        </FooterToolbar>
-      )}
+
       <ModalForm
         title={intl.formatMessage({
           id: 'pages.searchTable.createForm.newRule',
@@ -397,22 +343,7 @@ const TableList: React.FC = () => {
           }
         }}
       >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.ruleName"
-                  defaultMessage="Rule name is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="name"
-        />
-        <ProFormTextArea width="md" name="desc" />
+
       </ModalForm>
       <UpdateModal
         columns={columns}
@@ -464,8 +395,9 @@ const TableList: React.FC = () => {
         onCancel={() => {
           handleModalOpen(false);
         }}
+        //@ts-ignore
         onSubmit={(values) => {
-          handleAdd(values);
+          return handleAdd(values);
         }}
         visible={createModalOpen}
       />

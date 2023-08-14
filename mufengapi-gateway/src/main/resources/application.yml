@@ -19,7 +19,7 @@ spring:
           predicates:
             - Path=/api/interface/getRandomWords
           filters:
-            - SetPath=/api/soul?format=json&token=H3HVyW1yhW0cNQRL
+            - SetPath=/api/soul
         - id: api_route4
           uri: https://api.btstu.cn
           predicates:

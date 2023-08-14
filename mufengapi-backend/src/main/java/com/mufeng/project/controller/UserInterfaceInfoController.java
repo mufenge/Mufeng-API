@@ -11,9 +11,11 @@ import com.mufeng.project.constant.CommonConstant;
 import com.mufeng.project.constant.UserConstant;
 import com.mufeng.project.exception.BusinessException;
 
+import com.mufeng.project.mapper.UserInterfaceInfoMapper;
 import com.mufeng.project.model.dto.userInterfaceInfo.UserInterfaceInfoAddRequest;
 import com.mufeng.project.model.dto.userInterfaceInfo.UserInterfaceInfoQueryRequest;
 import com.mufeng.project.model.dto.userInterfaceInfo.UserInterfaceInfoUpdateRequest;
+import com.mufeng.project.model.vo.InterfaceInfoVO;
 import com.mufeng.project.service.UserInterfaceInfoService;
 import com.mufeng.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +37,8 @@ import java.util.List;
 @Slf4j
 public class UserInterfaceInfoController {
 
-
+    @Resource
+    private UserInterfaceInfoMapper userInterfaceInfoMapper;
     @Resource
     private UserInterfaceInfoService userInterfaceInfoService;
     @Resource
@@ -194,8 +197,18 @@ public class UserInterfaceInfoController {
         Page<UserInterfaceInfo> userInterfaceInfoPage = userInterfaceInfoService.page(new Page<>(current, size), queryWrapper);
         return ResultUtils.success(userInterfaceInfoPage);
     }
-
+    /**
+     * 分页获取用户接口信息列表
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping("/listInvokeUserInfo")
+    public BaseResponse<List<UserInterfaceInfo>> getInvokeUserInfo(HttpServletRequest request) {
+        User loginuser = userService.getLoginUser(request);
+        List<UserInterfaceInfo> userInterfaceInfoList = userInterfaceInfoMapper.getUserInvokeInfo(loginuser.getId());
+        return ResultUtils.success(userInterfaceInfoList);
+    }
     // endregion
-
 
 }
