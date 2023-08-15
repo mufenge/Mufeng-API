@@ -9,6 +9,7 @@ import com.mufeng.model.entity.User;
  */
 public interface UserMapper extends BaseMapper<User> {
 
+    Boolean changeUserPwd(long userId,String userPassword);
 }
 
 

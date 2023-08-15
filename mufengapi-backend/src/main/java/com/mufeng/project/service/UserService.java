@@ -1,8 +1,5 @@
 package com.mufeng.project.service;
 
-
-
-
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mufeng.model.entity.User;
 
@@ -58,4 +55,11 @@ public interface UserService extends IService<User> {
      * @return
      */
     boolean userLogout(HttpServletRequest request);
+    /**
+     * 用户注销
+     *
+     * @param userPassword
+     * @return
+     */
+    boolean changeUserPwd(String userPassword, long userId);
 }

@@ -12,5 +12,4 @@ import com.mufeng.model.entity.UserInterfaceInfo;
 public interface UserInterfaceInfoService extends IService<UserInterfaceInfo> {
     void validUserInterfaceInfo(UserInterfaceInfo userinterfaceInfo, boolean add);
     boolean invokeCount(long interfaceInfoId,long userId);
-    boolean getInvokeUserInfo(long userId);
 }

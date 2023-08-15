@@ -118,7 +118,6 @@ const TableList: React.FC = () => {
         ...fields,
       });
       hide();
-      console.log(fields);
       message.success('修改成功');
       actionRef.current?.reload();
       return true;
@@ -343,7 +342,6 @@ const TableList: React.FC = () => {
           }
         }}
       >
-
       </ModalForm>
       <UpdateModal
         columns={columns}

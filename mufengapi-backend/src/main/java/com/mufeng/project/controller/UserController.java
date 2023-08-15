@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.mufeng.model.entity.User;
+import com.mufeng.project.annotation.AuthCheck;
 import com.mufeng.project.common.BaseResponse;
 import com.mufeng.project.common.DeleteRequest;
 import com.mufeng.project.common.ErrorCode;
@@ -53,6 +54,24 @@ public class UserController {
             return null;
         }
         long result = userService.userRegister(userAccount, userPassword, checkPassword);
+        return ResultUtils.success(result);
+    }
+
+    /**
+     * 更新用户密码
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/changePassword")
+    public BaseResponse<Boolean> changeUserPwd(@RequestBody UserChangePwdRequest userChangePwdRequest, HttpServletRequest request) {
+        if (userChangePwdRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginuser = userService.getLoginUser(request);
+        long userId = loginuser.getId();
+        String userPassword = userChangePwdRequest.getUserPassword();
+        boolean result = userService.changeUserPwd(userPassword,userId);
         return ResultUtils.success(result);
     }
 
@@ -118,6 +137,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/add")
+    @AuthCheck(mustRole = "admin")
     public BaseResponse<Long> addUser(@RequestBody UserAddRequest userAddRequest, HttpServletRequest request) {
         if (userAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -139,6 +159,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/delete")
+    @AuthCheck(mustRole = "admin")
     public BaseResponse<Boolean> deleteUser(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -155,6 +176,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/update")
+    @AuthCheck(mustRole = "admin")
     public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest, HttpServletRequest request) {
         if (userUpdateRequest == null || userUpdateRequest.getId() == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -173,7 +195,9 @@ public class UserController {
      * @return
      */
     @GetMapping("/get")
-    public BaseResponse<UserVO> getUserById(int id, HttpServletRequest request) {
+    public BaseResponse<UserVO> getUserById(HttpServletRequest request) {
+        User loginuser = userService.getLoginUser(request);
+        long id = loginuser.getId();
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -191,6 +215,7 @@ public class UserController {
      * @return
      */
     @GetMapping("/list")
+    @AuthCheck(mustRole = "admin")
     public BaseResponse<List<UserVO>> listUser(UserQueryRequest userQueryRequest, HttpServletRequest request) {
         User userQuery = new User();
         if (userQueryRequest != null) {
@@ -214,6 +239,7 @@ public class UserController {
      * @return
      */
     @GetMapping("/list/page")
+    @AuthCheck(mustRole = "admin")
     public BaseResponse<Page<UserVO>> listUserByPage(UserQueryRequest userQueryRequest, HttpServletRequest request) {
         long current = 1;
         long size = 10;

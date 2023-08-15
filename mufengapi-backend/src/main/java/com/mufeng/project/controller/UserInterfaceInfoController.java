@@ -198,7 +198,7 @@ public class UserInterfaceInfoController {
         return ResultUtils.success(userInterfaceInfoPage);
     }
     /**
-     * 分页获取用户接口信息列表
+     * 获取用户接口信息列表
      *
      * @param request
      * @return

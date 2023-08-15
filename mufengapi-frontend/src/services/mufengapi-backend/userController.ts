@@ -14,6 +14,18 @@ export async function addUserUsingPOST(body: API.UserAddRequest, options?: { [ke
   });
 }
 
+/** changeUserPwd POST /api/user/changePassword */
+export async function changeUserPwdUsingPOST(body: API.User, options?: { [key: string]: any }) {
+  return request<API.BaseResponseboolean>('/api/user/changePassword', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** deleteUser POST /api/user/delete */
 export async function deleteUserUsingPOST(
   body: API.DeleteRequest,
