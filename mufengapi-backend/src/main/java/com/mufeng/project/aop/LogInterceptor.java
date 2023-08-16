@@ -1,10 +1,12 @@
 package com.mufeng.project.aop;
 
+import com.mufeng.project.annotation.ExcludeInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.RequestAttributes;
@@ -29,6 +31,11 @@ public class LogInterceptor {
      */
     @Around("execution(* com.mufeng.project.controller.*.*(..))")
     public Object doInterceptor(ProceedingJoinPoint point) throws Throwable {
+        MethodSignature methodSignature = (MethodSignature) point.getSignature();
+        if (methodSignature.getMethod().isAnnotationPresent(ExcludeInterceptor.class)) {
+            // 如果方法上有 ExcludeInterceptor 注解，则不执行额外逻辑
+            return point.proceed();
+        }
         // 计时
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

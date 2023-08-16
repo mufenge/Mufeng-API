@@ -7,6 +7,13 @@ spring:
     url: jdbc:mysql://localhost:3306/mufengapi
     username: root
     password: 0823
+  mail:
+    host: smtp.qq.com
+    username: 2216391020@qq.com
+    password: qoahnyspfgqeebif
+    default-encoding: UTF-8
+    thymeleaf:
+      cache: false
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER #路径匹配策略

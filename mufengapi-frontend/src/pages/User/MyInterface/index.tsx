@@ -100,7 +100,7 @@ const Index: React.FC = () => {
               handleUpdateModalOpen(true);
             }}
           >
-             修改密码
+            修改密码
           </Button>
         </Card>
         <br />

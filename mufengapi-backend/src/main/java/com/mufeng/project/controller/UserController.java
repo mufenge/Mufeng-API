@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.mufeng.model.entity.User;
 import com.mufeng.project.annotation.AuthCheck;
+import com.mufeng.project.annotation.ExcludeInterceptor;
 import com.mufeng.project.common.BaseResponse;
 import com.mufeng.project.common.DeleteRequest;
 import com.mufeng.project.common.ErrorCode;
@@ -13,12 +14,17 @@ import com.mufeng.project.exception.BusinessException;
 import com.mufeng.project.model.dto.user.*;
 import com.mufeng.project.model.vo.UserVO;
 import com.mufeng.project.service.UserService;
+import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import javax.annotation.Resource;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +37,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/user")
 public class UserController {
 
+    final String from = "Mufeng-API";
+    @Resource
+    JavaMailSender javaMailSender;
     @Resource
     private UserService userService;
 
@@ -43,6 +52,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/register")
+    @ExcludeInterceptor
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
         if (userRegisterRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -55,6 +65,78 @@ public class UserController {
         }
         long result = userService.userRegister(userAccount, userPassword, checkPassword);
         return ResultUtils.success(result);
+    }
+
+    /**
+     * 用户邮箱注册
+     *
+     * @param userEmailRegisterRequest
+     * @return
+     */
+    @PostMapping("/emailRegister")
+    @ExcludeInterceptor
+    public BaseResponse<Long> userEmailRegister(@RequestBody UserEmailRegisterRequest userEmailRegisterRequest, HttpSession session) {
+        if (userEmailRegisterRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        String email = userEmailRegisterRequest.getEmail();
+        Integer code = userEmailRegisterRequest.getCode();
+        String userPassword = userEmailRegisterRequest.getUserPassword();
+        String checkPassword = userEmailRegisterRequest.getCheckPassword();
+        if (StringUtils.isAnyBlank(email, userPassword, checkPassword)) {
+            return null;
+        }
+        String code1 = (String) session.getAttribute("code");
+        String email1 = (String) session.getAttribute("email");
+        if (!email1.equals(email)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        if (!code1.equals(code)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long result = userService.userEmailRegister(email, userPassword, checkPassword);
+        return ResultUtils.success(result);
+    }
+
+    /**
+     * 用户邮箱注册
+     *
+     * @param userEmailRequest
+     * @return
+     */
+    @GetMapping("/sendEmail")
+    @ExcludeInterceptor
+    public Boolean sendMail(@RequestBody UserEmailRequest userEmailRequest) {
+
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            //设置发件人
+            mimeMessageHelper.setFrom(from);
+            String email = userEmailRequest.getEmail();
+            //设置收件人
+            mimeMessageHelper.setTo(email);
+            //设置邮件主题
+            mimeMessageHelper.setSubject("邮箱登录验证");
+            //生成随机数
+            String random = randomInteger();
+            //将随机数放置到session中
+            //设置验证码的样式
+            mimeMessageHelper.setText("<font >" + random + "</font>", true);
+            javaMailSender.send(mimeMessage);
+        } catch (javax.mail.MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+
+    //生成随机数
+    public String randomInteger() {
+        String random = "";
+        for (int i = 0; i < 6; i++) {
+            random += (int) (Math.random() * 10);
+        }
+        return random.toString();
     }
 
     /**
@@ -71,7 +153,7 @@ public class UserController {
         User loginuser = userService.getLoginUser(request);
         long userId = loginuser.getId();
         String userPassword = userChangePwdRequest.getUserPassword();
-        boolean result = userService.changeUserPwd(userPassword,userId);
+        boolean result = userService.changeUserPwd(userPassword, userId);
         return ResultUtils.success(result);
     }
 
@@ -190,7 +272,6 @@ public class UserController {
     /**
      * 根据 id 获取用户
      *
-     * @param id
      * @param request
      * @return
      */

@@ -21,11 +21,52 @@ spring:
           filters:
             - SetPath=/api/soul
         - id: api_route4
-          uri: https://api.btstu.cn
+          uri: https://api.oioweb.cn
           predicates:
             - Path=/api/interface/getQueryICP
           filters:
-            - SetPath=/icp/api.php
+            - SetPath=/api/site/icp
+        - id: api_route5
+          uri: https://api.vvhan.com
+          predicates:
+            - Path=/api/interface/getQueryHotlist
+          filters:
+            - SetPath=/api/hotlist
+        - id: api_route6
+          uri: https://api.btstu.cn
+          predicates:
+            - Path=/api/interface/getQueryDomain
+          filters:
+            - SetPath=/dmreg/api.php
+        - id: api_route7
+          uri: https://api.oioweb.cn
+          predicates:
+            - Path=/api/interface/getQueryHistory
+          filters:
+            - SetPath=/api/common/history
+        - id: api_route8
+          uri: https://api.oioweb.cn
+          predicates:
+            - Path=/api/interface/getRandomAvatar
+          filters:
+            - SetPath=/api/picture/miyoushe_avatar
+        - id: api_route9
+          uri: https://api.oioweb.cn
+          predicates:
+            - Path=/api/interface/getRandomCXK
+          filters:
+            - SetPath=/api/picture/SogouServlet
+        - id: api_route10
+          uri: https://api.oioweb.cn
+          predicates:
+            - Path=/api/interface/getQueryRC
+          filters:
+            - SetPath=/api/common/rubbish
+
+
+
+
+
 dubbo:
   application:
     name: mufengapi-gateway

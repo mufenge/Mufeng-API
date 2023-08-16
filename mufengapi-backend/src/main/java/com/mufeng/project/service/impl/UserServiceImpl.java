@@ -1,7 +1,6 @@
 package com.mufeng.project.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mufeng.model.entity.User;
 import com.mufeng.project.common.ErrorCode;
@@ -82,7 +81,48 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             return user.getId();
         }
     }
+    @Override
+    public long userEmailRegister(String email, String userPassword, String checkPassword) {
+        // 1. 校验
+        if (StringUtils.isAnyBlank(email, userPassword, checkPassword)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
+        }
 
+        if (userPassword.length() < 6 || checkPassword.length() < 6) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
+        }
+        // 密码和校验密码相同
+        if (!userPassword.equals(checkPassword)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "两次输入的密码不一致");
+        }
+        synchronized (email.intern()) {
+            // 账户不能重复
+            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("email", email);
+            long count = userMapper.selectCount(queryWrapper);
+            if (count > 0) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
+            }
+            // 2. 加密
+            String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+
+            // 3.分配ak、sk
+            String accessKey = SignUtils.genAccessKey(email);
+            String secretKey = SignUtils.genSecretKey(email);
+            // 4. 插入数据
+            User user = new User();
+            user.setEmail(email);
+            user.setUserAccount(email);
+            user.setUserPassword(encryptPassword);
+            user.setAccessKey(accessKey);
+            user.setSecretKey(secretKey);
+            boolean saveResult = this.save(user);
+            if (!saveResult) {
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
+            }
+            return user.getId();
+        }
+    }
     @Override
     public boolean changeUserPwd(String userPassword, long userId) {
 

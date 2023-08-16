@@ -90,14 +90,14 @@ const Login: React.FC = () => {
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
         fetchUserInfo(res.data);
-        return;
+      }else {
+        message.error("账号或密码错误！")
       }
     } catch (error) {
       const defaultLoginFailureMessage = intl.formatMessage({
         id: 'pages.login.failure',
         defaultMessage: '登录失败，请重试！',
       });
-      console.log(error);
       message.error(defaultLoginFailureMessage);
     }
   };
@@ -146,7 +146,7 @@ const Login: React.FC = () => {
                 key: 'account',
                 label: intl.formatMessage({
                   id: 'pages.login.accountLogin.tab',
-                  defaultMessage: '账号密码登录',
+                  defaultMessage: '账号登录',
                 }),
               },
               {
@@ -177,7 +177,7 @@ const Login: React.FC = () => {
                 }}
                 placeholder={intl.formatMessage({
                   id: 'pages.login.username.placeholder',
-                  defaultMessage: '用户名: ',
+                  defaultMessage: '账号：',
                 })}
                 rules={[
                   {
@@ -185,7 +185,7 @@ const Login: React.FC = () => {
                     message: (
                       <FormattedMessage
                         id="pages.login.username.required"
-                        defaultMessage="请输入用户名!"
+                        defaultMessage="请输入账号!"
                       />
                     ),
                   },
@@ -199,7 +199,7 @@ const Login: React.FC = () => {
                 }}
                 placeholder={intl.formatMessage({
                   id: 'pages.login.password.placeholder',
-                  defaultMessage: '密码: ',
+                  defaultMessage: '密码：',
                 })}
                 rules={[
                   {

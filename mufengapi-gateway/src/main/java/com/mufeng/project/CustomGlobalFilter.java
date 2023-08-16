@@ -57,6 +57,8 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         String nonce = headers.getFirst("nonce");
         String timestamp = headers.getFirst("timestamp");
         String userAccount = headers.getFirst("userAccount");
+        String params = headers.getFirst("params");
+        log.info("请求参数:" + params);
         User invokeUser = null;
         try {
             invokeUser = innerUserService.getInvokeUser(userAccount);

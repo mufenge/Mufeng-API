@@ -4,7 +4,9 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSON;
 import com.mufeng.model.entity.User;
 
 import java.util.HashMap;
@@ -66,6 +68,46 @@ public class MufengAPIClient {
     public String getQueryICP(String params,String userAccount){
         String json = JSONUtil.toJsonStr(params);
         HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/interface/getQueryICP")
+                .addHeaders(getHeaderParams(params,userAccount))
+                .body(json)
+                .execute();
+        return httpResponse.body();
+    }
+    public String getQueryDomain(String params,String userAccount){
+        String json = JSONUtil.toJsonStr(params);
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/interface/getQueryDomain")
+                .addHeaders(getHeaderParams(params,userAccount))
+                .body(json)
+                .execute();
+        return httpResponse.body();
+    }
+    public String getQueryHistory(String params,String userAccount){
+        String json = JSONUtil.toJsonStr(params);
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/interface/getQueryHistory")
+                .addHeaders(getHeaderParams(params,userAccount))
+                .body(json)
+                .execute();
+        return httpResponse.body();
+    }
+    public String getRandomAvatar(String params,String userAccount){
+        String json = JSONUtil.toJsonStr(params);
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/interface/getRandomAvatar")
+                .addHeaders(getHeaderParams(params,userAccount))
+                .body(json)
+                .execute();
+        return httpResponse.body();
+    }
+    public String getRandomCXK(String params,String userAccount){
+        String json = JSONUtil.toJsonStr(params);
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/interface/getRandomCXK")
+                .addHeaders(getHeaderParams(params,userAccount))
+                .body(json)
+                .execute();
+        return httpResponse.body();
+    }
+    public String getQueryRC(String params,String userAccount){
+        String json = JSONUtil.toJsonStr(params);
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/interface/getQueryRC")
                 .addHeaders(getHeaderParams(params,userAccount))
                 .body(json)
                 .execute();

@@ -17,13 +17,14 @@
         <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
         <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,userName,userAccount,
         userAvatar,gender,userRole,
         userPassword,accessKey,secretKey,createTime,updateTime,
-        isDelete
+        isDelete,email
     </sql>
     <update id="changeUserPwd" >
         update user set userPassword = #{userPassword} where id = #{userId}

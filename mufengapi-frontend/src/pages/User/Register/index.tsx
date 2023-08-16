@@ -1,25 +1,14 @@
 import Footer from '@/components/Footer';
-import {LockOutlined, MobileOutlined, UserOutlined} from '@ant-design/icons';
-import { LoginForm, ProFormText } from '@ant-design/pro-components';
-import {Alert, message, Tabs} from 'antd';
-import React, { useState } from 'react';
+import {
+  userEmailRegisterUsingPOST,
+  userRegisterUsingPOST,
+} from '@/services/mufengapi-backend/userController';
 import { history, Link } from '@@/exports';
-import {userRegisterUsingPOST} from "@/services/mufengapi-backend/userController";
+import {LockOutlined, MailOutlined, UserOutlined} from '@ant-design/icons';
+import { LoginForm, ProFormCaptcha, ProFormText } from '@ant-design/pro-components';
+import { message, Tabs } from 'antd';
+import React, { useState } from 'react';
 import styles from './index.less';
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => {
-  return (
-    <Alert
-      style={{
-        marginBottom: 24,
-      }}
-      message={content}
-      type="error"
-      showIcon
-    />
-  );
-};
 
 const Register: React.FC = () => {
   const handleSubmit = async (values: API.UserRegisterRequest) => {
@@ -29,19 +18,24 @@ const Register: React.FC = () => {
       return;
     }
     try {
-      const signature = localStorage.getItem("api-open-platform-randomString")
+      const signature = localStorage.getItem('api-open-platform-randomString');
       // 注册
       let res;
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       if (type === 'register') {
         // 登录
-        res = await userRegisterUsingPOST(values,{
+        res = await userRegisterUsingPOST(values, {
           headers: {
-            "signature": signature
+            signature: signature,
           },
         });
       } else {
-
+        // @ts-ignore
+        res = await userEmailRegisterUsingPOST({
+          headers: {
+            signature: signature,
+          },
+        });
       }
       // @ts-ignore
       if (res.data) {
@@ -70,11 +64,11 @@ const Register: React.FC = () => {
               submitText: '注册',
             },
           }}
+
           logo={<img alt="logo" src="/logo.svg" />}
           title="Mufeng API"
           subTitle={
             <>
-              {/* eslint-disable-next-line react/no-unescaped-entities */}
               <p>
                 <b>一个丰富的API开放调用平台</b>
               </p>
@@ -91,18 +85,15 @@ const Register: React.FC = () => {
             items={[
               {
                 key: 'register',
-                label: '账号密码注册',
+                label: '账号注册',
               },
               {
                 key: 'emailRegister',
-                label: 'QQ邮箱注册',
+                label: '邮箱注册',
               },
             ]}
           />
-          {status === 'error' &&  (
-            <LoginMessage content={'错误的用户名和密码'} />
-          )}
-          {type === 'register' &&
+          {type === 'register' && (
             <>
               <ProFormText
                 name="userAccount"
@@ -110,11 +101,11 @@ const Register: React.FC = () => {
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,
                 }}
-                placeholder={'账号：账号应大于4个字符小于16个字符'}
+                placeholder={'账号：至少4位'}
                 rules={[
                   {
                     required: true,
-                    pattern:/^.{4,16}$/,
+                    pattern: /^.{4,16}$/,
                     message: '账号必须大于4个字符并且小于16个字符！',
                   },
                 ]}
@@ -125,11 +116,11 @@ const Register: React.FC = () => {
                   size: 'large',
                   prefix: <LockOutlined className={styles.prefixIcon} />,
                 }}
-                placeholder={'密码: 至少8位'}
+                placeholder={'密码: 至少6位'}
                 rules={[
                   {
                     required: true,
-                    pattern:/^.{8,16}$/,
+                    pattern: /^.{6,16}$/,
                     message: '密码必须大于8个字符且小于16个字符！',
                   },
                 ]}
@@ -144,39 +135,66 @@ const Register: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    pattern:/^.{3,16}$/,
+                    pattern: /^.{3,16}$/,
                     message: '两次密码必须一致！',
                   },
                 ]}
               />
-
-
             </>
-          }
-
-          {status === 'error'  && <LoginMessage content="验证码错误" />}
+          )}
           {type === 'emailRegister' && (
             <>
               <ProFormText
                 fieldProps={{
                   size: 'large',
-                  prefix: <MobileOutlined className={styles.prefixIcon} />,
+                  prefix: <MailOutlined className={styles.prefixIcon} />,
                 }}
-                name="emailNum"
-                placeholder={'请输入QQ邮箱！'}
+                name="email"
+                placeholder={'请输入邮箱！'}
                 rules={[
                   {
                     required: true,
                     message: '邮箱是必填项！',
                   },
                   {
-                    // pattern: /^1\d{10}$/,    手机号码正则表达式
                     pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
                     message: '不合法的邮箱！',
                   },
                 ]}
               />
 
+              <ProFormCaptcha
+                fieldProps={{
+                  size: 'large',
+                  prefix: <LockOutlined className={'prefixIcon'} />,
+                }}
+                captchaProps={{
+                  size: 'large',
+                }}
+                placeholder={'请输入验证码'}
+                captchaTextRender={(timing, count) => {
+                  if (timing) {
+                    return `${count} ${'后重新获取'}`;
+                  }
+                  return '获取验证码';
+                }}
+                // 手机号的 name，onGetCaptcha 会注入这个值
+
+                rules={[
+                  {
+                    required: true,
+                    message: '请输入6位验证码！',
+                  },
+                  {
+                    pattern: /^[0-9]\d{4}$/,
+                    message: '验证码格式错误！',
+                  },
+                ]}
+                onGetCaptcha={async () => {
+
+
+                }}
+              />
             </>
           )}
 
@@ -188,14 +206,13 @@ const Register: React.FC = () => {
             <Link
               style={{
                 marginBottom: 24,
-                float: 'right'
+                float: 'right',
               }}
               to={'/user/login'}
             >
               已有帐号？点击登陆
             </Link>
           </div>
-
         </LoginForm>
       </div>
       <Footer />

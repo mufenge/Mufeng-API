@@ -12,7 +12,7 @@ const Index: React.FC = () => {
   const [list, setList] = useState<API.InterfaceInfo[]>([]);
   const [total, setTotal] = useState<number>(0);
 
-  const loadData = async (current = 1, pageSize = 5) => {
+  const loadData = async (current = 1, pageSize = 8) => {
     setLoading(true);
     try {
       const res = await listInterfaceInfoByPageUsingGET({
@@ -58,7 +58,7 @@ const Index: React.FC = () => {
           showTotal(total) {
             return '总数:' + total;
           },
-          pageSize: 7,
+          pageSize: 8,
           total,
           onChange(page, pageSize) {
             loadData(page, pageSize);

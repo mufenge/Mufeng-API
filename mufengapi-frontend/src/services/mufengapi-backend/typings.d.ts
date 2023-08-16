@@ -92,11 +92,6 @@ declare namespace API {
     id?: number;
   };
 
-  type getUserByIdUsingGETParams = {
-    /** id */
-    id?: number;
-  };
-
   type getUserInterfaceInfoByIdUsingGETParams = {
     /** id */
     id?: number;
@@ -381,6 +376,7 @@ declare namespace API {
   type User = {
     accessKey?: string;
     createTime?: string;
+    email?: string;
     gender?: number;
     id?: number;
     isDelete?: number;
@@ -400,6 +396,32 @@ declare namespace API {
     userName?: string;
     userPassword?: string;
     userRole?: string;
+  };
+
+  type UserChangePwdRequest = {
+    checkPassword?: string;
+    id?: number;
+    userPassword?: string;
+  };
+
+  type UserEmailRegisterRequest = {
+    checkPassword?: string;
+    code?: number;
+    email?: string;
+    userPassword?: string;
+  };
+
+  type userEmailRegisterUsingPOSTParams = {
+    creationTime?: number;
+    id?: string;
+    lastAccessedTime?: number;
+    maxInactiveInterval?: number;
+    new?: boolean;
+    valueNames?: string[];
+  };
+
+  type UserEmailRequest = {
+    email?: string;
   };
 
   type UserInterfaceInfo = {

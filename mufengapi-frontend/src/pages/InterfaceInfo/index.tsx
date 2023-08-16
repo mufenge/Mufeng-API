@@ -1,6 +1,11 @@
 import {
   invokeCommonInterfaceUsingPOST,
+  invokeQueryDomainInterfaceUsingPOST,
+  invokeQueryHistoryInterfaceUsingPOST,
   invokeQueryICPInterfaceUsingPOST,
+  invokeQueryRCInterfaceUsingPOST,
+  invokeRandomAvatarInterfaceUsingPOST,
+  invokeRandomCXKInterfaceUsingPOST,
   invokeRandomWordsInterfaceUsingPOST,
 } from '@/services/mufengapi-backend/interfaceController';
 import {
@@ -59,9 +64,12 @@ const Index: React.FC = () => {
           ...values,
         });
         setinvokeRes(res.data);
-        message.success('请求成功');
+        if (res.data){
+          message.success('请求成功');
+        }else {
+          message.error('操作失败');
+        }
       } catch (error: any) {
-        message.error('操作失败');
         return false;
       }
       setInvokeLoading(false);
@@ -73,9 +81,12 @@ const Index: React.FC = () => {
           ...values,
         });
         setinvokeRes(res.data);
-        message.success('请求成功');
+        if (res.data){
+          message.success('请求成功');
+        }else {
+          message.error('操作失败');
+        }
       } catch (error: any) {
-        message.error('操作失败');
         return false;
       }
       setInvokeLoading(false);
@@ -87,9 +98,12 @@ const Index: React.FC = () => {
           ...values,
         });
         setinvokeRes(res.data);
-        message.success('请求成功');
+        if (res.data){
+          message.success('请求成功');
+        }else {
+          message.error('操作失败');
+        }
       } catch (error: any) {
-        message.error('操作失败');
         return false;
       }
       setInvokeLoading(false);
@@ -101,14 +115,101 @@ const Index: React.FC = () => {
           ...values,
         });
         setinvokeRes(res.data);
-        message.success('请求成功');
+        if (res.data){
+          message.success('请求成功');
+        }else {
+          message.error('操作失败');
+        }
       } catch (error: any) {
-        message.error('操作失败');
         return false;
       }
       setInvokeLoading(false);
     }
-
+    if (interfaceId === 5) {
+      try {
+        const res = await invokeQueryDomainInterfaceUsingPOST({
+          id: params.id,
+          ...values,
+        });
+        setinvokeRes(res.data);
+        if (res.data){
+          message.success('请求成功');
+        }else {
+          message.error('操作失败');
+        }
+      } catch (error: any) {
+        return false;
+      }
+      setInvokeLoading(false);
+    }
+    if (interfaceId === 6) {
+      try {
+        const res = await invokeQueryHistoryInterfaceUsingPOST({
+          id: params.id,
+          ...values,
+        });
+        setinvokeRes(res.data);
+        if (res.data){
+          message.success('请求成功');
+        }else {
+          message.error('操作失败');
+        }
+      } catch (error: any) {
+        return false;
+      }
+      setInvokeLoading(false);
+    }
+    if (interfaceId === 7) {
+      try {
+        const res = await invokeRandomAvatarInterfaceUsingPOST({
+          id: params.id,
+          ...values,
+        });
+        setinvokeRes(res.data);
+        if (res.data){
+          message.success('请求成功');
+        }else {
+          message.error('操作失败');
+        }
+      } catch (error: any) {
+        return false;
+      }
+      setInvokeLoading(false);
+    }
+    if (interfaceId === 8) {
+      try {
+        const res = await invokeRandomCXKInterfaceUsingPOST({
+          id: params.id,
+          ...values,
+        });
+        setinvokeRes(res.data);
+        if (res.data){
+          message.success('请求成功');
+        }else {
+          message.error('操作失败');
+        }
+      } catch (error: any) {
+        return false;
+      }
+      setInvokeLoading(false);
+    }
+    if (interfaceId === 9) {
+      try {
+        const res = await invokeQueryRCInterfaceUsingPOST({
+          id: params.id,
+          ...values,
+        });
+        setinvokeRes(res.data);
+        if (res.data){
+          message.success('请求成功');
+        }else {
+          message.error('操作失败');
+        }
+      } catch (error: any) {
+        return false;
+      }
+      setInvokeLoading(false);
+    }
   };
 
   return (
@@ -120,8 +221,8 @@ const Index: React.FC = () => {
             <Descriptions.Item label="接口Id">{data.id}</Descriptions.Item>
             <Descriptions.Item label="描述">{data.description}</Descriptions.Item>
             <Descriptions.Item label="请求地址">{data.url}</Descriptions.Item>
-            <Descriptions.Item label="请求方法">{data.method}</Descriptions.Item>
             <Descriptions.Item label="请求参数">{data.requestParams}</Descriptions.Item>
+            <Descriptions.Item label="请求方法">{data.method}</Descriptions.Item>
             <Descriptions.Item label="响应头">{data.responseHeader}</Descriptions.Item>
             <Descriptions.Item label="请求头">{data.requestHeader}</Descriptions.Item>
             <Descriptions.Item label="创建时间">{data.createTime}</Descriptions.Item>

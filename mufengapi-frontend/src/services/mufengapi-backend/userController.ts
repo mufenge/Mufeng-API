@@ -15,7 +15,10 @@ export async function addUserUsingPOST(body: API.UserAddRequest, options?: { [ke
 }
 
 /** changeUserPwd POST /api/user/changePassword */
-export async function changeUserPwdUsingPOST(body: API.User, options?: { [key: string]: any }) {
+export async function changeUserPwdUsingPOST(
+  body: API.UserChangePwdRequest,
+  options?: { [key: string]: any },
+) {
   return request<API.BaseResponseboolean>('/api/user/changePassword', {
     method: 'POST',
     headers: {
@@ -41,17 +44,30 @@ export async function deleteUserUsingPOST(
   });
 }
 
-/** getUserById GET /api/user/get */
-export async function getUserByIdUsingGET(
+/** userEmailRegister POST /api/user/emailRegister */
+export async function userEmailRegisterUsingPOST(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.getUserByIdUsingGETParams,
+  params: API.userEmailRegisterUsingPOSTParams,
+  body: API.UserEmailRegisterRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseUserVO>('/api/user/get', {
-    method: 'GET',
+  return request<API.BaseResponselong>('/api/user/emailRegister', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     params: {
       ...params,
     },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** getUserById GET /api/user/get */
+export async function getUserByIdUsingGET(options?: { [key: string]: any }) {
+  return request<API.BaseResponseUserVO>('/api/user/get', {
+    method: 'GET',
     ...(options || {}),
   });
 }
@@ -124,6 +140,21 @@ export async function userRegisterUsingPOST(
 ) {
   return request<API.BaseResponselong>('/api/user/register', {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** sendMail GET /api/user/sendEmail */
+export async function sendMailUsingGET(
+  body: API.UserEmailRequest,
+  options?: { [key: string]: any },
+) {
+  return request<boolean>('/api/user/sendEmail', {
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
