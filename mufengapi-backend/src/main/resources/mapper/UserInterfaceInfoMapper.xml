@@ -28,4 +28,8 @@
     <select id="getUserInvokeInfo" resultType="com.mufeng.model.entity.UserInterfaceInfo">
         select status,interfaceInfoId,totalNum,leftNum from user_interface_info where userId = #{userId};
     </select>
+    <insert id="insertNum" >
+        insert into user_interface_info(userId, interfaceInfoId,totalNum, leftNum)
+        values (#{userId},#{interfaceInfoId},0,100)
+    </insert>
 </mapper>

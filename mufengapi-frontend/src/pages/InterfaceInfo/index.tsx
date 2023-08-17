@@ -17,6 +17,7 @@ import {Button, Card, Descriptions, Form, message, Tag} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import {getInsertNumUsingPOST} from "@/services/mufengapi-backend/userInterfaceInfoController";
 
 /**
  * 接口文档
@@ -48,6 +49,16 @@ const Index: React.FC = () => {
     loadData();
   }, []);
 
+  const insertNum = async () =>{
+    const res = await getInsertNumUsingPOST({
+      ...data,
+    })
+    if (res){
+      message.success("获取成功")
+    }else {
+      message.error("获取失败，请勿重复获取")
+    }
+  }
   const onFinish = async (values: any) => {
     if (!params.id) {
       message.error('接口不存在');
@@ -231,6 +242,7 @@ const Index: React.FC = () => {
         ) : (
           <>接口不存在</>
         )}
+        <Button type="primary" onClick={insertNum}>获取免费次数</Button>（每个账号每个接口仅限获取一次，可进行100次免费调用）
       </Card>
       <Card loading={loading}>
         <Form layout="vertical" name="invoke" onFinish={onFinish}>

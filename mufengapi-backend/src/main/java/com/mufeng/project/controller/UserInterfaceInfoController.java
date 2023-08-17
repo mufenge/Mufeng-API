@@ -3,6 +3,7 @@ package com.mufeng.project.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import com.mufeng.model.entity.InterfaceInfo;
 import com.mufeng.model.entity.User;
 import com.mufeng.model.entity.UserInterfaceInfo;
 import com.mufeng.project.annotation.AuthCheck;
@@ -208,6 +209,30 @@ public class UserInterfaceInfoController {
         User loginuser = userService.getLoginUser(request);
         List<UserInterfaceInfo> userInterfaceInfoList = userInterfaceInfoMapper.getUserInvokeInfo(loginuser.getId());
         return ResultUtils.success(userInterfaceInfoList);
+    }
+    /**
+     * 获取接口调用次数
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/insertNum")
+    public Boolean getInsertNum(@RequestBody InterfaceInfo interfaceInfo, HttpServletRequest request){
+        User loginuser = userService.getLoginUser(request);
+        Long userId = loginuser.getId();
+        Long interfaceInfoId = interfaceInfo.getId();
+        // 数据不能重复
+        QueryWrapper<UserInterfaceInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("userId", userId);
+        queryWrapper.eq("interfaceInfoId", interfaceInfoId);
+        long count = userInterfaceInfoMapper.selectCount(queryWrapper);
+        if (count > 0) {
+            return false;
+        }else {
+            userInterfaceInfoMapper.insertNum(userId,interfaceInfoId);
+            return true;
+        }
+
     }
     // endregion
 

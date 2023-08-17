@@ -38,8 +38,6 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     @DubboReference
     private InnerUserInterfaceInfoService innerUserInterfaceInfoService;
     private static final String INTERFACE_HOST = "http://localhost:7529";
-
-
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         //1.请求日志
@@ -99,10 +97,13 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if (interfaceInfo == null) {
             return handleNoAuth(response);
         }
-
+        Boolean res = innerUserInterfaceInfoService.invokeCount(interfaceInfo.getId(), invokeUser.getId());
+        if (!res){
+            return handleInvokeError(response);
+        }
         //5.调用成功，invokeCount，输出响应日志；调用失败，返回规范错误码
         if (response.getStatusCode() == HttpStatus.OK) {
-            innerUserInterfaceInfoService.invokeCount(interfaceInfo.getId(), invokeUser.getId());
+
             log.info("调用成功，响应结果：" + response.getStatusCode());
         } else {
             return handleInvokeError(response);
