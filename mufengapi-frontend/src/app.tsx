@@ -8,6 +8,7 @@ import { requestConfig } from './requestConfig';
 
 import { getLoginUserUsingGET } from '@/services/mufengapi-backend/userController';
 import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDropdown';
+import defaultSettings from "../config/defaultSettings";
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -92,7 +93,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
           <SettingDrawer
             disableUrlParams
             enableDarkTheme
-
+            // @ts-ignore
+            settings={defaultSettings}
             onSettingChange={(settings) => {
               setInitialState((preInitialState) => ({
                 ...preInitialState,

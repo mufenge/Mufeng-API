@@ -97,13 +97,14 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if (interfaceInfo == null) {
             return handleNoAuth(response);
         }
+        //5.判断是否调用成功，invokeCount，输出响应日志；调用失败，返回规范错误码
         Boolean res = innerUserInterfaceInfoService.invokeCount(interfaceInfo.getId(), invokeUser.getId());
         if (!res){
-            return handleInvokeError(response);
+            log.info("次数不足");
+            return handleNoAuth(response);
         }
-        //5.调用成功，invokeCount，输出响应日志；调用失败，返回规范错误码
-        if (response.getStatusCode() == HttpStatus.OK) {
 
+        if (response.getStatusCode() == HttpStatus.OK) {
             log.info("调用成功，响应结果：" + response.getStatusCode());
         } else {
             return handleInvokeError(response);

@@ -32,4 +32,8 @@
         insert into user_interface_info(userId, interfaceInfoId,totalNum, leftNum)
         values (#{userId},#{interfaceInfoId},0,100)
     </insert>
+    <update id="invokeCount">
+        update user_interface_info set leftNum = leftNum -1, totalNum = totalNum + 1
+        where userId = #{userId} and interfaceInfoId = #{interfaceInfoId} and leftNum > 0;
+    </update>
 </mapper>

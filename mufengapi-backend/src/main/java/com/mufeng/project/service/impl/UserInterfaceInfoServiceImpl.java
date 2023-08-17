@@ -10,6 +10,8 @@ import com.mufeng.project.mapper.UserInterfaceInfoMapper;
 import com.mufeng.project.service.UserInterfaceInfoService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 /**
 * @author lenovo
 * @description 针对表【user_interface_info(用户调用接口信息)】的数据库操作Service实现
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoMapper, UserInterfaceInfo>
     implements UserInterfaceInfoService {
+    @Resource
+    UserInterfaceInfoMapper userInterfaceInfoMapper;
     @Override
     public void validUserInterfaceInfo(UserInterfaceInfo userInterfaceInfo, boolean add) {
         if (userInterfaceInfo == null) {
@@ -53,10 +57,14 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
         updateWrapper.eq("userId",userId);
         updateWrapper.gt("leftNum",0);
         updateWrapper.setSql("leftNum = leftNum -1, totalNum = totalNum + 1");
-        boolean update = this.update(updateWrapper);
-        return update;
+        long count = userInterfaceInfoMapper.selectCount(updateWrapper);
+        if (count==0){
+            return false;
+        }else {
+            boolean update = this.update(updateWrapper);
+            return update;
+        }
     }
-
 
 }
 
