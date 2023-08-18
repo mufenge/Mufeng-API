@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/user")
 public class UserController {
 
-    final String from = "Mufeng-API";
+    final String from = "2216391020@qq.com";
     @Resource
     JavaMailSender javaMailSender;
     @Resource
@@ -101,29 +101,30 @@ public class UserController {
     /**
      * 用户邮箱注册
      *
-     * @param userEmailRequest
+     * @param
      * @return
      */
     @GetMapping("/sendEmail")
     @ExcludeInterceptor
-    public Boolean sendMail(@RequestBody UserEmailRequest userEmailRequest) {
-
+    public Boolean sendMail() {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             //设置发件人
             mimeMessageHelper.setFrom(from);
-            String email = userEmailRequest.getEmail();
+            String email = "19572216227@163.com";
             //设置收件人
             mimeMessageHelper.setTo(email);
             //设置邮件主题
             mimeMessageHelper.setSubject("邮箱登录验证");
             //生成随机数
             String random = randomInteger();
+
             //将随机数放置到session中
             //设置验证码的样式
             mimeMessageHelper.setText("<font >" + random + "</font>", true);
             javaMailSender.send(mimeMessage);
+
         } catch (javax.mail.MessagingException e) {
             throw new RuntimeException(e);
         }
