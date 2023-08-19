@@ -4,13 +4,13 @@ spring:
   # DataSource Config
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://118.24.33.53:3306/mufengapi
+    url: jdbc:mysql://123456/mufengapi
     username: root
-    password: mufeng0823?
+    password: 123456
   mail:
     host: smtp.qq.com
-    username: 2216391020@qq.com
-    password: qoahnyspfgqeebif
+    username: 123456@qq.com
+    password: 123456
     default-encoding: UTF-8
   mvc:
     pathmatch:
@@ -22,9 +22,9 @@ spring:
   # redis 配置
   redis:
     port: 6379
-    host: 118.24.33.53
+    host: 123456
     database: 0
-    password: mufeng0823?
+    password: 123456
 server:
   port: 7529
   servlet:
@@ -46,4 +46,4 @@ dubbo:
     port: -1
   registry:
     id: nacos-registry
-    address: nacos://10.206.25.10:8091
+    address: nacos://123456:8091
