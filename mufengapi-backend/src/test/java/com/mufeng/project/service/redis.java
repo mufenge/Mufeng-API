@@ -18,10 +18,9 @@ public class redis {
     @Test
     public void redisTest(){
 
-        RedisUtil redisUtil = new RedisUtil();
-        redisUtil.set("mufeng123","123");
-
-        System.out.println(redisUtil.get("mufeng"));
+        redisTemplate.opsForValue().set("mufeng233","233");
+        redisTemplate.opsForValue().set("mufeng33","鸡你太美");
+        System.out.println(redisTemplate.opsForValue().get("mufeng33"));
     }
 
 }
