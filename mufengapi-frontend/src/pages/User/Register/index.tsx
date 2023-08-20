@@ -1,40 +1,38 @@
 import Footer from '@/components/Footer';
 import {
+  sendMailUsingPOST,
+
   userEmailRegisterUsingPOST,
   userRegisterUsingPOST,
 } from '@/services/mufengapi-backend/userController';
 import { history, Link } from '@@/exports';
 import {LockOutlined, MailOutlined, UserOutlined} from '@ant-design/icons';
-import { LoginForm, ProFormCaptcha, ProFormText } from '@ant-design/pro-components';
+import {LoginForm, ProForm, ProFormCaptcha, ProFormText} from '@ant-design/pro-components';
 import { message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
 
 const Register: React.FC = () => {
+  const [form] = ProForm.useForm();
   const handleSubmit = async (values: API.UserRegisterRequest) => {
     const { userPassword, checkPassword } = values;
     if (userPassword !== checkPassword) {
       message.error('两次输入密码不一致');
       return;
     }
+
     try {
-      const signature = localStorage.getItem('api-open-platform-randomString');
       // 注册
       let res;
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       if (type === 'register') {
         // 登录
         res = await userRegisterUsingPOST(values, {
-          headers: {
-            signature: signature,
-          },
         });
       } else {
         // @ts-ignore
-        res = await userEmailRegisterUsingPOST({
-          headers: {
-            signature: signature,
-          },
+        res = await userEmailRegisterUsingPOST(values,{
+
         });
       }
       // @ts-ignore
@@ -48,17 +46,24 @@ const Register: React.FC = () => {
         return;
       }
     } catch (error: any) {
-      console.log(error);
       message.error(error.message);
     }
   };
 
   const [type, setType] = useState<string>('register');
-
+  const onGetCaptcha = async () =>{
+    const email = form.getFieldValue('email');
+    const res = await sendMailUsingPOST(email)
+    if (res){
+      message.success("验证码发送成功,请注意查收！");
+    }else {
+      message.error("验证码发送失败！");
+    }
+  }
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <LoginForm
+        <LoginForm form={form}
           submitter={{
             searchConfig: {
               submitText: '注册',
@@ -105,8 +110,8 @@ const Register: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    pattern: /^.{4,16}$/,
-                    message: '账号必须大于4个字符并且小于16个字符！',
+                    pattern: /^.{4,22}$/,
+                    message: '账号必须大于4个字符并且小于22个字符！',
                   },
                 ]}
               />
@@ -179,7 +184,7 @@ const Register: React.FC = () => {
                   return '获取验证码';
                 }}
                 // 手机号的 name，onGetCaptcha 会注入这个值
-
+                name="code"
                 rules={[
                   {
                     required: true,
@@ -190,10 +195,8 @@ const Register: React.FC = () => {
                     message: '验证码格式错误！',
                   },
                 ]}
-                onGetCaptcha={async () => {
+                onGetCaptcha={onGetCaptcha}
 
-
-                }}
               />
             </>
           )}

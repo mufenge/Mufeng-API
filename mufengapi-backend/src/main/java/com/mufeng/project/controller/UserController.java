@@ -17,6 +17,10 @@ import com.mufeng.project.service.UserService;
 import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -26,6 +30,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +48,9 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @Autowired
+    @Qualifier("myRedisTemplate")
+    private RedisTemplate redisTemplate;
     // region 登录相关
 
     /**
@@ -74,26 +82,22 @@ public class UserController {
      * @return
      */
     @PostMapping("/emailRegister")
-    @ExcludeInterceptor
-    public BaseResponse<Long> userEmailRegister(@RequestBody UserEmailRegisterRequest userEmailRegisterRequest, HttpSession session) {
+    public BaseResponse<Long> userEmailRegister(@RequestBody UserEmailRegisterRequest userEmailRegisterRequest) {
         if (userEmailRegisterRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         String email = userEmailRegisterRequest.getEmail();
-        Integer code = userEmailRegisterRequest.getCode();
+        Integer userCode = userEmailRegisterRequest.getCode();
+        Integer realCode = (Integer) redisTemplate.opsForValue().get("code" + userCode + userCode);
+        if (!userCode.equals(realCode)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
         String userPassword = userEmailRegisterRequest.getUserPassword();
         String checkPassword = userEmailRegisterRequest.getCheckPassword();
         if (StringUtils.isAnyBlank(email, userPassword, checkPassword)) {
             return null;
         }
-        String code1 = (String) session.getAttribute("code");
-        String email1 = (String) session.getAttribute("email");
-        if (!email1.equals(email)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        if (!code1.equals(code)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
+
         long result = userService.userEmailRegister(email, userPassword, checkPassword);
         return ResultUtils.success(result);
     }
@@ -104,40 +108,27 @@ public class UserController {
      * @param
      * @return
      */
-    @GetMapping("/sendEmail")
-    @ExcludeInterceptor
-    public Boolean sendMail() {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        try {
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-            //设置发件人
-            mimeMessageHelper.setFrom(from);
-            String email = "19572216227@163.com";
-            //设置收件人
-            mimeMessageHelper.setTo(email);
-            //设置邮件主题
-            mimeMessageHelper.setSubject("邮箱登录验证");
-            //生成随机数
-            String random = randomInteger();
-
-            //将随机数放置到session中
-            //设置验证码的样式
-            mimeMessageHelper.setText("<font >" + random + "</font>", true);
-            javaMailSender.send(mimeMessage);
-
-        } catch (javax.mail.MessagingException e) {
-            throw new RuntimeException(e);
+    @PostMapping("/sendEmail")
+    public Boolean sendMail(@RequestBody String email) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        String sendEmail = remove(email);
+        StringBuilder randomInt = new StringBuilder();;
+        for (int i = 0; i < 6; i++) {
+            randomInt.append((int) (Math.random() * 10));
         }
+        redisTemplate.opsForValue().set("code" + randomInt, randomInt);
+        redisTemplate.expire("code" + randomInt, 180, TimeUnit.SECONDS);
+        mailMessage.setFrom("2216391020@qq.com");
+        mailMessage.setTo(sendEmail);
+        mailMessage.setText("您的验证码：" + randomInt + "，有效时间为3分钟，请尽快完成注册，注册后可用邮箱号作为账号登录,默认密码123456，请及时修改！");
+        mailMessage.setSubject("Mufeng-API");
+        javaMailSender.send(mailMessage);
+        System.out.println("====完成发送！====");
         return true;
     }
 
-    //生成随机数
-    public String randomInteger() {
-        String random = "";
-        for (int i = 0; i < 6; i++) {
-            random += (int) (Math.random() * 10);
-        }
-        return random.toString();
+    public String remove(String input){
+        return input.replaceAll("\"","");
     }
 
     /**

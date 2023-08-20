@@ -46,8 +46,6 @@ export async function deleteUserUsingPOST(
 
 /** userEmailRegister POST /api/user/emailRegister */
 export async function userEmailRegisterUsingPOST(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.userEmailRegisterUsingPOSTParams,
   body: API.UserEmailRegisterRequest,
   options?: { [key: string]: any },
 ) {
@@ -55,9 +53,6 @@ export async function userEmailRegisterUsingPOST(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-    },
-    params: {
-      ...params,
     },
     data: body,
     ...(options || {}),
@@ -148,13 +143,10 @@ export async function userRegisterUsingPOST(
   });
 }
 
-/** sendMail GET /api/user/sendEmail */
-export async function sendMailUsingGET(
-  body: API.UserEmailRequest,
-  options?: { [key: string]: any },
-) {
+/** sendMail POST /api/user/sendEmail */
+export async function sendMailUsingPOST(body: string, options?: { [key: string]: any }) {
   return request<boolean>('/api/user/sendEmail', {
-    method: 'GET',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },

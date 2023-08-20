@@ -411,19 +411,6 @@ declare namespace API {
     userPassword?: string;
   };
 
-  type userEmailRegisterUsingPOSTParams = {
-    creationTime?: number;
-    id?: string;
-    lastAccessedTime?: number;
-    maxInactiveInterval?: number;
-    new?: boolean;
-    valueNames?: string[];
-  };
-
-  type UserEmailRequest = {
-    email?: string;
-  };
-
   type UserInterfaceInfo = {
     create_time?: string;
     id?: number;
