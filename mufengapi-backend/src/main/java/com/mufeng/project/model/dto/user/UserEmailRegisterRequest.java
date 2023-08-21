@@ -14,7 +14,6 @@ public class UserEmailRegisterRequest implements Serializable {
 
     private static final long serialVersionUID = 3191241716373120793L;
     private String email;
-    private int code;
-    private String userPassword;
-    private String checkPassword;
+    private String code;
+
 }

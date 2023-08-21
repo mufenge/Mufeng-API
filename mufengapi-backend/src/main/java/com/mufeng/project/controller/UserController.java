@@ -87,13 +87,13 @@ public class UserController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         String email = userEmailRegisterRequest.getEmail();
-        Integer userCode = userEmailRegisterRequest.getCode();
-        Integer realCode = (Integer) redisTemplate.opsForValue().get("code" + userCode + userCode);
+        String userCode = userEmailRegisterRequest.getCode();
+        String realCode = redisTemplate.opsForValue().get("code" + userCode).toString();
         if (!userCode.equals(realCode)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        String userPassword = userEmailRegisterRequest.getUserPassword();
-        String checkPassword = userEmailRegisterRequest.getCheckPassword();
+        String userPassword = "123456";
+        String checkPassword = "123456";
         if (StringUtils.isAnyBlank(email, userPassword, checkPassword)) {
             return null;
         }
@@ -109,26 +109,24 @@ public class UserController {
      * @return
      */
     @PostMapping("/sendEmail")
-    public Boolean sendMail(@RequestBody String email) {
+    public Boolean sendMail(@RequestBody UserEmailRequest userEmailRequest) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        String sendEmail = remove(email);
+        String sendEmail = userEmailRequest.getEmail();
+        if (sendEmail==null){
+            return false;
+        }
         StringBuilder randomInt = new StringBuilder();;
         for (int i = 0; i < 6; i++) {
             randomInt.append((int) (Math.random() * 10));
         }
         redisTemplate.opsForValue().set("code" + randomInt, randomInt);
-        redisTemplate.expire("code" + randomInt, 180, TimeUnit.SECONDS);
-        mailMessage.setFrom("2216391020@qq.com");
+        redisTemplate.expire("code" + randomInt, 300, TimeUnit.SECONDS);
+        mailMessage.setFrom(from);
         mailMessage.setTo(sendEmail);
-        mailMessage.setText("您的验证码：" + randomInt + "，有效时间为3分钟，请尽快完成注册，注册后可用邮箱号作为账号登录,默认密码123456，请及时修改！");
+        mailMessage.setText("您的验证码：" + randomInt + "，有效时间为5分钟，请尽快完成注册，注册后可用邮箱号作为账号登录,默认密码123456，请及时修改！");
         mailMessage.setSubject("Mufeng-API");
         javaMailSender.send(mailMessage);
-        System.out.println("====完成发送！====");
         return true;
-    }
-
-    public String remove(String input){
-        return input.replaceAll("\"","");
     }
 
     /**
