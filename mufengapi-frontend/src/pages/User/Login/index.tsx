@@ -1,7 +1,7 @@
 import Footer from '@/components/Footer';
 import {
+  emailLoginUsingPOST,
   sendMailUsingPOST,
-  userEmailRegisterUsingPOST,
   userLoginUsingPOST
 } from '@/services/mufengapi-backend/userController';
 import {
@@ -82,20 +82,20 @@ const Login: React.FC = () => {
         }else {
           message.error("账号或密码错误！")
         }
-      }else {
-        const email = form.getFieldValue('email');
-        const code = form.getFieldValue('code');
+      }else if (type === "email"){
+        const email = form.getFieldValue("email");
+        const code = form.getFieldValue("code");
         const values = {email,code};
         console.log(values);
-        res = await userEmailRegisterUsingPOST(values,{
+        res = await emailLoginUsingPOST(values,{
+          headers: {
+            'Content-Type': 'application/json',
+          }
         });
         if (res.data){
-          const defaultLoginSuccessMessage = '注册成功！';
-          message.success(defaultLoginSuccessMessage);
-          /** 此方法会跳转到 redirect 参数所在的位置 */
-          if (!history) return;
-          history.push('/user/login');
-          return;
+          const urlParams = new URL(window.location.href).searchParams;
+          history.push(urlParams.get('redirect') || '/');
+          fetchUserInfo(res.data);
         }
       }
 
@@ -138,7 +138,7 @@ const Login: React.FC = () => {
           padding: '32px 0',
         }}
       >
-        <LoginForm
+        <LoginForm form={form}
           contentStyle={{
             minWidth: 280,
             maxWidth: '75vw',
@@ -160,11 +160,11 @@ const Login: React.FC = () => {
             centered
             items={[
               {
-                key: 'register',
+                key: 'account',
                 label: '账号登录',
               },
               {
-                key: 'emailRegister',
+                key: 'email',
                 label: '邮箱注册登录',
               },
             ]}
@@ -217,7 +217,7 @@ const Login: React.FC = () => {
               />
             </>
           )}
-          {type === 'emile' && (
+          {type === 'email' && (
             <>
               <ProFormText
                 fieldProps={{

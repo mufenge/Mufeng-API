@@ -161,18 +161,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
     @Override
     public User emailLogin(String email, HttpServletRequest request) {
-        // 查询用户是否存在
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("email", email);
-        User user = userMapper.selectOne(queryWrapper);
-        // 用户不存在
-        if (user == null) {
-            log.info("user login failed, userAccount cannot match userPassword");
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
+        synchronized (email.intern()) {
+            // 账户不能重复
+            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("email", email);
+            long count = userMapper.selectCount(queryWrapper);
+            if (count > 0) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
+            }
+            String userPassword = "123456";
+            // 2. 加密
+            String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+            // 3.分配ak、sk
+            String accessKey = SignUtils.genAccessKey(email);
+            String secretKey = SignUtils.genSecretKey(email);
+            // 4. 插入数据
+            User user = new User();
+            user.setEmail(email);
+            user.setUserAccount(email);
+            user.setUserPassword(encryptPassword);
+            user.setAccessKey(accessKey);
+            user.setSecretKey(secretKey);
+            boolean saveResult = this.save(user);
+            if (!saveResult) {
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
+            }
+            // 记录用户的登录态
+            request.getSession().setAttribute(USER_LOGIN_STATE, user);
+            return user;
         }
-        // 3. 记录用户的登录态
-        request.getSession().setAttribute(USER_LOGIN_STATE, user);
-        return user;
     }
     /**
      * 获取当前登录用户

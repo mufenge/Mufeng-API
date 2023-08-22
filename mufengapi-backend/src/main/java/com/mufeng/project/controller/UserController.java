@@ -74,33 +74,6 @@ public class UserController {
     /**
      * 用户邮箱注册
      *
-     * @param userEmailRegisterRequest
-     * @return
-     */
-    @PostMapping("/emailRegister")
-    public BaseResponse<Long> userEmailRegister(@RequestBody UserEmailRegisterRequest userEmailRegisterRequest) {
-        if (userEmailRegisterRequest == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        String email = userEmailRegisterRequest.getEmail();
-        String userCode = userEmailRegisterRequest.getCode();
-        String realCode = redisTemplate.opsForValue().get("code" + userCode).toString();
-        if (!userCode.equals(realCode)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        String userPassword = "123456";
-        String checkPassword = "123456";
-        if (StringUtils.isAnyBlank(email, userPassword, checkPassword)) {
-            return null;
-        }
-
-        long result = userService.userEmailRegister(email, userPassword, checkPassword);
-        return ResultUtils.success(result);
-    }
-
-    /**
-     * 用户邮箱注册
-     *
      * @param
      * @return
      */

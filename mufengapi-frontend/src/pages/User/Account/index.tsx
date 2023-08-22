@@ -71,7 +71,7 @@ const Index: React.FC = () => {
           {data ? (
             <Descriptions column={2}>
               <Descriptions.Item label="用户名">{data.userAccount}</Descriptions.Item>
-              <Descriptions.Item label="用户Id">{data.id}</Descriptions.Item>
+              <Descriptions.Item label="用户角色">{data.userRole}</Descriptions.Item>
               <Descriptions.Item label="用户Id">{data.id}</Descriptions.Item>
               <Descriptions.Item label="创建时间">{data.createTime}</Descriptions.Item>
             </Descriptions>

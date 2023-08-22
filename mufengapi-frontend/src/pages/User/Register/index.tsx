@@ -1,8 +1,7 @@
 import Footer from '@/components/Footer';
 import {
+  emailLoginUsingPOST,
   sendMailUsingPOST,
-
-  userEmailRegisterUsingPOST,
   userRegisterUsingPOST,
 } from '@/services/mufengapi-backend/userController';
 import { history, Link } from '@@/exports';
@@ -33,7 +32,7 @@ const Register: React.FC = () => {
         const email = form.getFieldValue('email');
         const code = form.getFieldValue('code');
         const values = {email,code}
-        res = await userEmailRegisterUsingPOST(values,{
+        res = await emailLoginUsingPOST(values,{
         });
       }
       // @ts-ignore

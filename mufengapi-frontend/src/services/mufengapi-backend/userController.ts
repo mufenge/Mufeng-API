@@ -44,6 +44,21 @@ export async function deleteUserUsingPOST(
   });
 }
 
+/** emailLogin POST /api/user/emailLogin */
+export async function emailLoginUsingPOST(
+  body: API.UserEmailRegisterRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseUser>('/api/user/emailLogin', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** userEmailRegister POST /api/user/emailRegister */
 export async function userEmailRegisterUsingPOST(
   body: API.UserEmailRegisterRequest,
