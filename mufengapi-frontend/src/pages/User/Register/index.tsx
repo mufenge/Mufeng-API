@@ -30,9 +30,10 @@ const Register: React.FC = () => {
         res = await userRegisterUsingPOST(values, {
         });
       } else {
-        // @ts-ignore
+        const email = form.getFieldValue('email');
+        const code = form.getFieldValue('code');
+        const values = {email,code}
         res = await userEmailRegisterUsingPOST(values,{
-
         });
       }
       // @ts-ignore
@@ -49,11 +50,14 @@ const Register: React.FC = () => {
       message.error(error.message);
     }
   };
-
   const [type, setType] = useState<string>('register');
   const onGetCaptcha = async () =>{
     const email = form.getFieldValue('email');
-    const res = await sendMailUsingPOST(email)
+    const values = {email};
+    // @ts-ignore
+    const res = await sendMailUsingPOST(values,{
+
+    });
     if (res){
       message.success("验证码发送成功,请注意查收！");
     }else {
@@ -126,7 +130,7 @@ const Register: React.FC = () => {
                   {
                     required: true,
                     pattern: /^.{6,16}$/,
-                    message: '密码必须大于8个字符且小于16个字符！',
+                    message: '密码必须大于6个字符且小于16个字符！',
                   },
                 ]}
               />
@@ -191,8 +195,8 @@ const Register: React.FC = () => {
                     message: '请输入6位验证码！',
                   },
                   {
-                    pattern: /^[0-9]\d{4}$/,
-                    message: '验证码格式错误！',
+                    pattern: /^[0-9]\d{5}$/,
+                    message: '请输入6位数字验证码！',
                   },
                 ]}
                 onGetCaptcha={onGetCaptcha}

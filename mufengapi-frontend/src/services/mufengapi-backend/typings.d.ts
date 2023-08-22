@@ -405,10 +405,12 @@ declare namespace API {
   };
 
   type UserEmailRegisterRequest = {
-    checkPassword?: string;
-    code?: number;
+    code?: string;
     email?: string;
-    userPassword?: string;
+  };
+
+  type UserEmailRequest = {
+    email?: string;
   };
 
   type UserInterfaceInfo = {

@@ -74,7 +74,6 @@ const Index: React.FC = () => {
               <Descriptions.Item label="用户Id">{data.id}</Descriptions.Item>
               <Descriptions.Item label="用户Id">{data.id}</Descriptions.Item>
               <Descriptions.Item label="创建时间">{data.createTime}</Descriptions.Item>
-              <Descriptions.Item label="更新时间">{data.updateTime}</Descriptions.Item>
             </Descriptions>
           ) : (
             <>接口不存在</>

@@ -14,21 +14,17 @@ import com.mufeng.project.exception.BusinessException;
 import com.mufeng.project.model.dto.user.*;
 import com.mufeng.project.model.vo.UserVO;
 import com.mufeng.project.service.UserService;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import javax.annotation.Resource;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -165,6 +161,27 @@ public class UserController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User user = userService.userLogin(userAccount, userPassword, request);
+        return ResultUtils.success(user);
+    }
+    /**
+     * 邮箱登录
+     *
+     * @param userEmailRegisterRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/emailLogin")
+    public BaseResponse<User> emailLogin(@RequestBody UserEmailRegisterRequest userEmailRegisterRequest, HttpServletRequest request) {
+        if (userEmailRegisterRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        String email = userEmailRegisterRequest.getEmail();
+        String userCode = userEmailRegisterRequest.getCode();
+        String realCode = redisTemplate.opsForValue().get("code" + userCode).toString();
+        if (!userCode.equals(realCode)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = userService.emailLogin(email, request);
         return ResultUtils.success(user);
     }
 

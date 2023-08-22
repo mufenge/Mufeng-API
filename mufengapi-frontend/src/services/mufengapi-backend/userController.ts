@@ -144,7 +144,10 @@ export async function userRegisterUsingPOST(
 }
 
 /** sendMail POST /api/user/sendEmail */
-export async function sendMailUsingPOST(body: string, options?: { [key: string]: any }) {
+export async function sendMailUsingPOST(
+  body: API.UserEmailRequest,
+  options?: { [key: string]: any },
+) {
   return request<boolean>('/api/user/sendEmail', {
     method: 'POST',
     headers: {

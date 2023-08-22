@@ -1,24 +1,28 @@
 import Footer from '@/components/Footer';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
-import { userLoginUsingPOST } from '@/services/mufengapi-backend/userController';
+import {
+  sendMailUsingPOST,
+  userEmailRegisterUsingPOST,
+  userLoginUsingPOST
+} from '@/services/mufengapi-backend/userController';
 import {
   LockOutlined,
   MailOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import {
-  LoginForm,
+  LoginForm, ProForm,
   ProFormCaptcha,
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { FormattedMessage, Helmet, history, SelectLang, useIntl, useModel } from '@umijs/max';
-import { Alert, message, Tabs } from 'antd';
+import { message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import Settings from '../../../../config/defaultSettings';
 import {flushSync} from "react-dom";
 import {Link} from "@@/exports";
+import styles from "@/pages/User/Register/index.less";
 
 const Lang = () => {
   const langClassName = useEmotionCss(({ token }) => {
@@ -41,27 +45,10 @@ const Lang = () => {
     </div>
   );
 };
-
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => {
-  return (
-    <Alert
-      style={{
-        marginBottom: 24,
-      }}
-      message={content}
-      type="error"
-      showIcon
-    />
-  );
-};
-
 const Login: React.FC = () => {
-  const [userLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { setInitialState } = useModel('@@initialState');
-
+  const [form] = ProForm.useForm();
   const containerClassName = useEmotionCss(() => {
     return {
       display: 'flex',
@@ -84,15 +71,34 @@ const Login: React.FC = () => {
   }
   const handleSubmit = async (values: API.UserLoginRequest) => {
     try {
+      let res;
       // 登录
-      const res = await userLoginUsingPOST({ ...values });
-      if (res.data) {
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
-        fetchUserInfo(res.data);
+      if (type === "account"){
+        res = await userLoginUsingPOST({ ...values });
+        if (res.data) {
+          const urlParams = new URL(window.location.href).searchParams;
+          history.push(urlParams.get('redirect') || '/');
+          fetchUserInfo(res.data);
+        }else {
+          message.error("账号或密码错误！")
+        }
       }else {
-        message.error("账号或密码错误！")
+        const email = form.getFieldValue('email');
+        const code = form.getFieldValue('code');
+        const values = {email,code};
+        console.log(values);
+        res = await userEmailRegisterUsingPOST(values,{
+        });
+        if (res.data){
+          const defaultLoginSuccessMessage = '注册成功！';
+          message.success(defaultLoginSuccessMessage);
+          /** 此方法会跳转到 redirect 参数所在的位置 */
+          if (!history) return;
+          history.push('/user/login');
+          return;
+        }
       }
+
     } catch (error) {
       const defaultLoginFailureMessage = intl.formatMessage({
         id: 'pages.login.failure',
@@ -101,8 +107,19 @@ const Login: React.FC = () => {
       message.error(defaultLoginFailureMessage);
     }
   };
-  const { status, type: loginType } = userLoginState;
+  const onGetCaptcha = async () =>{
+    const email = form.getFieldValue('email');
+    const values = {email};
+    // @ts-ignore
+    const res = await sendMailUsingPOST(values,{
 
+    });
+    if (res){
+      message.success("验证码发送成功,请注意查收！");
+    }else {
+      message.error("验证码发送失败！");
+    }
+  }
   return (
     <div className={containerClassName}>
       <Helmet>
@@ -143,30 +160,15 @@ const Login: React.FC = () => {
             centered
             items={[
               {
-                key: 'account',
-                label: intl.formatMessage({
-                  id: 'pages.login.accountLogin.tab',
-                  defaultMessage: '账号登录',
-                }),
+                key: 'register',
+                label: '账号登录',
               },
               {
-                key: 'emile',
-                label: intl.formatMessage({
-                  id: 'pages.login.phoneLogin.tab',
-                  defaultMessage: '邮箱登录',
-                }),
+                key: 'emailRegister',
+                label: '邮箱注册登录',
               },
             ]}
           />
-
-          {status === 'error' && loginType === 'account' && (
-            <LoginMessage
-              content={intl.formatMessage({
-                id: 'pages.login.accountLogin.errorMessage',
-                defaultMessage: '账户或密码错误!',
-              })}
-            />
-          )}
           {type === 'account' && (
             <>
               <ProFormText
@@ -215,86 +217,54 @@ const Login: React.FC = () => {
               />
             </>
           )}
-
-          {status === 'error' && loginType === 'emile' && <LoginMessage content="验证码错误" />}
           {type === 'emile' && (
             <>
               <ProFormText
                 fieldProps={{
                   size: 'large',
-                  prefix: <MailOutlined />,
+                  prefix: <MailOutlined className={styles.prefixIcon} />,
                 }}
-                name="emile"
-                placeholder={intl.formatMessage({
-                  id: 'pages.login.phoneNumber.placeholder',
-                  defaultMessage: '邮箱号',
-                })}
+                name="email"
+                placeholder={'请输入邮箱！'}
                 rules={[
                   {
                     required: true,
-                    message: (
-                      <FormattedMessage
-                        id="pages.login.phoneNumber.required"
-                        defaultMessage="请输入邮箱号！"
-                      />
-                    ),
+                    message: '邮箱是必填项！',
                   },
                   {
-                    pattern: /^1\d{10}$/,
-                    message: (
-                      <FormattedMessage
-                        id="pages.login.phoneNumber.invalid"
-                        defaultMessage="邮箱号格式错误！"
-                      />
-                    ),
+                    pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+                    message: '不合法的邮箱！',
                   },
                 ]}
               />
               <ProFormCaptcha
                 fieldProps={{
                   size: 'large',
-                  prefix: <LockOutlined />,
+                  prefix: <LockOutlined className={'prefixIcon'} />,
                 }}
                 captchaProps={{
                   size: 'large',
                 }}
-                placeholder={intl.formatMessage({
-                  id: 'pages.login.captcha.placeholder',
-                  defaultMessage: '请输入验证码',
-                })}
+                placeholder={'请输入验证码'}
                 captchaTextRender={(timing, count) => {
                   if (timing) {
-                    return `${count} ${intl.formatMessage({
-                      id: 'pages.getCaptchaSecondText',
-                      defaultMessage: '获取验证码',
-                    })}`;
+                    return `${count} ${'后重新获取'}`;
                   }
-                  return intl.formatMessage({
-                    id: 'pages.login.phoneLogin.getVerificationCode',
-                    defaultMessage: '获取验证码',
-                  });
+                  return '获取验证码';
                 }}
-                name="captcha"
+                name="code"
                 rules={[
                   {
                     required: true,
-                    message: (
-                      <FormattedMessage
-                        id="pages.login.captcha.required"
-                        defaultMessage="请输入验证码！"
-                      />
-                    ),
+                    message: '请输入6位验证码！',
+                  },
+                  {
+                    pattern: /^[0-9]\d{5}$/,
+                    message: '请输入6位数字验证码！',
                   },
                 ]}
-                onGetCaptcha={async (phone) => {
-                  const result = await getFakeCaptcha({
-                    phone,
-                  });
-                  if (!result) {
-                    return;
-                  }
-                  message.success('获取验证码成功！验证码为：1234');
-                }}
+                onGetCaptcha={onGetCaptcha}
+
               />
             </>
           )}
