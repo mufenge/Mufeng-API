@@ -84,10 +84,12 @@ public class UserController {
         if (sendEmail==null){
             return false;
         }
+        //生成6位随机数
         StringBuilder randomInt = new StringBuilder();;
         for (int i = 0; i < 6; i++) {
             randomInt.append((int) (Math.random() * 10));
         }
+        //将code+随机数作为key，随机数作为value存储
         redisTemplate.opsForValue().set("code" + randomInt, randomInt);
         redisTemplate.expire("code" + randomInt, 300, TimeUnit.SECONDS);
         mailMessage.setFrom(from);

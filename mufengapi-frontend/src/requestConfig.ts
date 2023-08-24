@@ -25,7 +25,7 @@ interface ResponseStructure {
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const requestConfig: RequestConfig = {
-  baseURL:'http://localhost:7529',
+  baseURL:'http://121.196.238.66:7529',
   withCredentials: true,
   // 错误处理： umi@3 的错误处理方案。
   errorConfig: {
