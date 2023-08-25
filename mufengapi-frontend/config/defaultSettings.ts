@@ -8,7 +8,7 @@ const Settings: ProLayoutProps & {
   layout: 'top',
   contentWidth: 'Fluid',
   fixedHeader: false,
-  fixSiderbar: true,
+  fixSiderbar: false,
   colorWeak: false,
   title: 'Mufeng API',
   pwa: true,

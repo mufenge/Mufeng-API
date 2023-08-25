@@ -1,5 +1,5 @@
 import { userLogoutUsingPOST } from '@/services/mufengapi-backend/userController';
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useModel } from '@umijs/max';
 import { stringify } from 'querystring';
@@ -74,14 +74,9 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ children }) =
 
   const menuItems = [
     {
-      key: 'center',
+      key: 'account',
       icon: <UserOutlined />,
       label: '个人中心',
-    },
-    {
-      key: 'settings',
-      icon: <SettingOutlined />,
-      label: '个人设置',
     },
     {
       type: 'divider' as const,

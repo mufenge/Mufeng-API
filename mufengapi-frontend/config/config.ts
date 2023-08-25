@@ -38,7 +38,7 @@ export default defineConfig({
   theme: {
     // 如果不想要 configProvide 动态设置主题需要把这个设置为 default
     // 只有设置为 variable， 才能使用 configProvide 动态设置主色调
-    'root-entry-name': 'variable',
+    'root-entry-name': 'default',
   },
   /**
    * @name moment 的国际化配置
@@ -75,7 +75,7 @@ export default defineConfig({
    * @name layout 插件
    * @doc https://umijs.org/docs/max/layout-menu
    */
-  title: 'Ant Design Pro',
+  title: 'Mufeng API',
   layout: {
     locale: false,
     ...defaultSettings,
