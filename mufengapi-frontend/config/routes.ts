@@ -3,7 +3,6 @@ export default [
   { path: '/user/account', name: '个人信息', icon: 'user', component: './User/Account' },
   { path: '/user/myinterface', name: '接口信息', icon: 'appstore', component: './User/MyInterface' },
   {
-    history: 'hash',
     path: '/interface_info/:id',
     component: './InterfaceInfo',
     hideInMenu: true,
