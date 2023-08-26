@@ -1,7 +1,8 @@
 import { listInterfaceInfoByPageUsingGET } from '@/services/mufengapi-backend/interfaceInfoController';
 import { PageContainer } from '@ant-design/pro-components';
-import { List, message } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { List,message } from 'antd';
+import React,{ useEffect,useState } from 'react';
+import { Link } from "react-router-dom";
 
 /**
  * 主页
@@ -42,13 +43,13 @@ const Index: React.FC = () => {
           return (
             <List.Item
               actions={[
-                <a key={item.id} href={apiLink}>
+                <Link key={item.id} to={apiLink}>
                   查看
-                </a>,
+                </Link>,
               ]}
             >
               <List.Item.Meta
-                title={<a href={apiLink}>{item.name}</a>}
+                title={<Link to={apiLink}>{item.name}</Link>}
                 description={item.description}
               />
             </List.Item>
