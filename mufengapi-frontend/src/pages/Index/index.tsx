@@ -2,7 +2,8 @@ import { listInterfaceInfoByPageUsingGET } from '@/services/mufengapi-backend/in
 import { PageContainer } from '@ant-design/pro-components';
 import { List,message } from 'antd';
 import React,{ useEffect,useState } from 'react';
-import { Link } from "react-router-dom";
+import {Link} from "@umijs/renderer-react";
+
 
 /**
  * 主页

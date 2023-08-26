@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.mufeng</groupId>
     <artifactId>mufengapi-gateway</artifactId>
-    <version>0.1</version>
+    <version>0.3</version>
     <name>mufengapi-gateway</name>
     <description>mufengapi-gateway</description>
     <properties>

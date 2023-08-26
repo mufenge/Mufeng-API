@@ -4,9 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
-import com.alibaba.fastjson.JSON;
 import com.mufeng.model.entity.User;
 
 import java.util.HashMap;
@@ -17,7 +15,7 @@ import java.util.Map;
  */
 public class MufengAPIClient {
 
-    private static final String GATEWAY_HOST = "http://localhost:8090";
+    private static final String GATEWAY_HOST = "http://121.196.238.66:8090";
     private String userRequestParams;
 
     public MufengAPIClient(String userRequestParams) {
