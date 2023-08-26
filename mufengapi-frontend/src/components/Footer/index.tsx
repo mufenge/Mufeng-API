@@ -4,12 +4,7 @@ import { useIntl } from '@umijs/max';
 import React from 'react';
 
 const Footer: React.FC = () => {
-  const intl = useIntl();
-  const defaultMessage = intl.formatMessage({
-    id: 'app.copyright.produced',
-    defaultMessage: '木风出品',
-  });
-
+  const defaultMessage = '木风出品';
   const currentYear = new Date().getFullYear();
 
   return (

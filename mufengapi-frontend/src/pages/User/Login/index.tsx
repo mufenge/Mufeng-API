@@ -16,7 +16,7 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { FormattedMessage, Helmet, history, SelectLang, useIntl, useModel } from '@umijs/max';
+import { Helmet, history, SelectLang, useModel } from '@umijs/max';
 import { message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import Settings from '../../../../config/defaultSettings';
@@ -60,8 +60,6 @@ const Login: React.FC = () => {
       backgroundSize: '100% 100%',
     };
   });
-  const intl = useIntl();
-
   const fetchUserInfo = (userInfo: API.UserVO)=>{
     if(userInfo){
       flushSync(()=>{
@@ -79,6 +77,7 @@ const Login: React.FC = () => {
           const urlParams = new URL(window.location.href).searchParams;
           history.push(urlParams.get('redirect') || '/');
           fetchUserInfo(res.data);
+          message.success("登录成功！")
         }else {
           message.error("账号或密码错误！")
         }
@@ -100,11 +99,7 @@ const Login: React.FC = () => {
       }
 
     } catch (error) {
-      const defaultLoginFailureMessage = intl.formatMessage({
-        id: 'pages.login.failure',
-        defaultMessage: '登录失败，请重试！',
-      });
-      message.error(defaultLoginFailureMessage);
+      message.error("登录失败");
     }
   };
   const onGetCaptcha = async () =>{
@@ -124,10 +119,7 @@ const Login: React.FC = () => {
     <div className={containerClassName}>
       <Helmet>
         <title>
-          {intl.formatMessage({
-            id: 'menu.login',
-            defaultMessage: '登录页',
-          })}
+          登录页,
           - {Settings.title}
         </title>
       </Helmet>
@@ -145,7 +137,7 @@ const Login: React.FC = () => {
           }}
           logo={<img alt="logo" src="/logo.svg" />}
           title="Mufeng API"
-          subTitle={intl.formatMessage({ id: '一个丰富的API开放调用平台' })}
+          subTitle={'一个丰富的API开放调用平台' }
           initialValues={{
             autoLogin: true,
           }}
@@ -177,19 +169,11 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <UserOutlined />,
                 }}
-                placeholder={intl.formatMessage({
-                  id: 'pages.login.username.placeholder',
-                  defaultMessage: '账号：',
-                })}
+                placeholder={'请输入账号'}
                 rules={[
                   {
                     required: true,
-                    message: (
-                      <FormattedMessage
-                        id="pages.login.username.required"
-                        defaultMessage="请输入账号!"
-                      />
-                    ),
+                    message: ("请输入账号!"),
                   },
                 ]}
               />
@@ -199,19 +183,11 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <LockOutlined />,
                 }}
-                placeholder={intl.formatMessage({
-                  id: 'pages.login.password.placeholder',
-                  defaultMessage: '密码：',
-                })}
+                placeholder={'请输入密码'}
                 rules={[
                   {
                     required: true,
-                    message: (
-                      <FormattedMessage
-                        id="pages.login.password.required"
-                        defaultMessage="请输入密码！"
-                      />
-                    ),
+                    message: ("请输入密码!"),
                   },
                 ]}
               />
@@ -274,7 +250,7 @@ const Login: React.FC = () => {
             }}
           >
             <ProFormCheckbox noStyle name="autoLogin">
-              <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
+              自动登录
             </ProFormCheckbox>
             <Link
               style={{

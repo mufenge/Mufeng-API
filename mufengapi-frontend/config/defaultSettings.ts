@@ -1,23 +1,15 @@
-import { ProLayoutProps } from '@ant-design/pro-components';
-const Settings: ProLayoutProps & {
-  pwa?: boolean;
-} = {
-  navTheme: 'light',
-  // 拂晓蓝
-  colorPrimary: '#1890ff',
+const Settings= {
+  navTheme: 'realDark',
   layout: 'top',
   contentWidth: 'Fluid',
   fixedHeader: false,
-  fixSiderbar: false,
+  fixSiderbar: true,
   colorWeak: false,
-  title: 'Mufeng API',
-  pwa: true,
-  iconfontUrl: '',
+  title: 'Mufeng-API',
   menu: {
-    locale: false,
+    locale: false, //关闭国际化
   },
-  token: {
-  },
+  pwa: true,
 };
 
 export default Settings;

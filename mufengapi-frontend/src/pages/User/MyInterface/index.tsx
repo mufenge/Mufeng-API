@@ -27,7 +27,7 @@ const Index: React.FC = () => {
   // @ts-ignore
   return (
     <>
-      <PageContainer title="个人账号信息" loading={loading}>
+      <PageContainer title="个人接口信息" loading={loading}>
         <br />
         <List
           grid={{

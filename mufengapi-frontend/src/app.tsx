@@ -1,16 +1,12 @@
 import Footer from '@/components/Footer';
 import { SelectLang } from '@/components/RightContent';
-import { LinkOutlined } from '@ant-design/icons';
-import { SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
-import { history, Link } from '@umijs/max';
+import { history } from '@umijs/max';
 import { requestConfig } from './requestConfig';
 
 import { getLoginUserUsingGET } from '@/services/mufengapi-backend/userController';
 import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDropdown';
-import defaultSettings from "../config/defaultSettings";
 
-const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
 /**
@@ -31,20 +27,18 @@ export async function getInitialState(): Promise<InitialState> {
   }
   return state;
 }
-
-// ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+export const layout: RunTimeLayoutConfig = ({ initialState}) => {
   return {
     layout: 'top',
+    logo: "https://cdn1.iconfinder.com/data/icons/carbon-design-system-vol-2/32/API--1-512.png",
     actionsRender: () => [<SelectLang key="SelectLang" />],
     avatarProps: {
       src: initialState?.loginUser?.userAccount,
-      title: <AvatarName />,
       render: (_, avatarChildren) => {
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
+      title: <AvatarName />,
     },
-
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
@@ -73,14 +67,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         width: '331px',
       },
     ],
-    links: isDev
-      ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
-      : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
@@ -90,18 +76,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       return (
         <>
           {children}
-          <SettingDrawer
-            disableUrlParams
-            enableDarkTheme
-            // @ts-ignore
-            settings={defaultSettings}
-            onSettingChange={(settings) => {
-              setInitialState((preInitialState) => ({
-                ...preInitialState,
-                settings,
-              }));
-            }}
-          />
         </>
       );
     },

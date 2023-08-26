@@ -17,7 +17,7 @@ export const AvatarName = () => {
   const { initialState } = useModel('@@initialState');
   // @ts-ignore
   const { loginUser } = initialState;
-  return <span className="anticon">{loginUser?.userAccount}</span>;
+  return <span>{loginUser?.userAccount}</span>;
 };
 
 export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ children }) => {

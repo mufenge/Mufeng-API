@@ -25,7 +25,7 @@ interface ResponseStructure {
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const requestConfig: RequestConfig = {
-  baseURL:'https://121.196.238.66:7529',
+  baseURL:'https://springboot-pq2n-67608-4-1320422627.sh.run.tcloudbase.com/',
   withCredentials: true,
   // 错误处理： umi@3 的错误处理方案。
   errorConfig: {
