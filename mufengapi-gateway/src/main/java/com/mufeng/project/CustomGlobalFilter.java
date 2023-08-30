@@ -37,7 +37,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     private InnerInterfaceInfoService innerInterfaceInfoService;
     @DubboReference
     private InnerUserInterfaceInfoService innerUserInterfaceInfoService;
-    private static final String INTERFACE_HOST = "https://springboot-pq2n-67608-4-1320422627.sh.run.tcloudbase.com:7529";
+    private static final String INTERFACE_HOST = "https://springboot-pq2n-67608-4-1320422627.sh.run.tcloudbase.com";
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         //1.请求日志

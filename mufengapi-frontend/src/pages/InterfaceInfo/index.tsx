@@ -10,7 +10,6 @@ import {
 } from '@/services/mufengapi-backend/interfaceController';
 import {
   getInterfaceInfoByIdUsingGET,
-  invokeInterfaceInfoUsingPOST,
 } from '@/services/mufengapi-backend/interfaceInfoController';
 import { PageContainer } from '@ant-design/pro-components';
 import {Button, Card, Descriptions, Form, message, Tag} from 'antd';
@@ -71,7 +70,7 @@ const Index: React.FC = () => {
     let interfaceId = data.id;
     if (interfaceId === 1) {
       try {
-        const res = await invokeQueryICPInterfaceUsingPOST({
+        const res = await invokeCommonInterfaceUsingPOST({
           id: params.id,
           ...values,
         });
@@ -88,7 +87,7 @@ const Index: React.FC = () => {
     }
     if (interfaceId === 2) {
       try {
-        const res = await invokeCommonInterfaceUsingPOST({
+        const res = await invokeQueryHistoryInterfaceUsingPOST({
           id: params.id,
           ...values,
         });
@@ -105,7 +104,7 @@ const Index: React.FC = () => {
     }
     if (interfaceId === 3) {
       try {
-        const res = await invokeInterfaceInfoUsingPOST({
+        const res = await invokeQueryRCInterfaceUsingPOST({
           id: params.id,
           ...values,
         });
@@ -156,7 +155,7 @@ const Index: React.FC = () => {
     }
     if (interfaceId === 6) {
       try {
-        const res = await invokeQueryHistoryInterfaceUsingPOST({
+        const res = await invokeQueryICPInterfaceUsingPOST({
           id: params.id,
           ...values,
         });
@@ -205,23 +204,7 @@ const Index: React.FC = () => {
       }
       setInvokeLoading(false);
     }
-    if (interfaceId === 9) {
-      try {
-        const res = await invokeQueryRCInterfaceUsingPOST({
-          id: params.id,
-          ...values,
-        });
-        setinvokeRes(res.data);
-        if (res.data){
-          message.success('请求成功');
-        }else {
-          message.error('操作失败');
-        }
-      } catch (error: any) {
-        return false;
-      }
-      setInvokeLoading(false);
-    }
+
   };
 
   return (

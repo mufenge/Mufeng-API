@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class MufengAPIClient {
 
-    private static final String GATEWAY_HOST = "http://121.196.238.66:8090";
+    private static final String GATEWAY_HOST = "https://springboot-ycd1-67608-4-1320422627.sh.run.tcloudbase.com";
     private String userRequestParams;
 
     public MufengAPIClient(String userRequestParams) {
