@@ -1,8 +1,9 @@
 import { listInterfaceInfoByPageUsingGET } from '@/services/mufengapi-backend/interfaceInfoController';
 import { PageContainer } from '@ant-design/pro-components';
-import { List,message } from 'antd';
+import {Button, List, message, Tag} from 'antd';
 import React,{ useEffect,useState } from 'react';
 import {Link} from "@umijs/renderer-react";
+import {ApiOutlined} from "@ant-design/icons";
 
 
 /**
@@ -36,22 +37,38 @@ const Index: React.FC = () => {
     <PageContainer title={'在线API开放平台'}>
       <List
         className="my-list"
+        size="large"
         loading={loading}
         itemLayout="horizontal"
         dataSource={list}
+        bordered={true}
         renderItem={(item) => {
           const apiLink = `/interface_info/${item.id}`;
           return (
             <List.Item
               actions={[
                 <Link key={item.id} to={apiLink}>
-                  查看
-                </Link>,
+                <Button key={123} type="primary" icon={<ApiOutlined />}>
+                    在线调用
+                </Button>
+                </Link>
               ]}
             >
               <List.Item.Meta
                 title={<Link to={apiLink}>{item.name}</Link>}
                 description={item.description}
+              />
+              <List.Item.Meta
+                  title="请求参数"
+                  description={item.requestParams}
+              />
+              <List.Item.Meta
+                  title="接口状态"
+                  description={item.status ? <Tag color="green">正常</Tag> : <Tag color="red">禁用</Tag>}
+              />
+              <List.Item.Meta
+                  title="请求方法"
+                  description={item.method}
               />
             </List.Item>
           );

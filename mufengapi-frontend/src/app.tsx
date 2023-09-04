@@ -33,7 +33,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState}) => {
     logo: "https://cdn1.iconfinder.com/data/icons/carbon-design-system-vol-2/32/API--1-512.png",
     actionsRender: () => [<SelectLang key="SelectLang" />],
     avatarProps: {
-      src: initialState?.loginUser?.userAccount,
+      src: "https://img1.baidu.com/it/u=931490470,2773349721&fm=253&fmt=auto&app=120&f=JPEG?w=801&h=500",
       render: (_, avatarChildren) => {
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },

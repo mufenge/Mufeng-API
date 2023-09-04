@@ -215,8 +215,8 @@ const Index: React.FC = () => {
             <Descriptions.Item label="接口状态">{!data.status ? <Tag color="red">禁用</Tag> : <Tag color="green">正常</Tag>}</Descriptions.Item>
             <Descriptions.Item label="接口Id">{data.id}</Descriptions.Item>
             <Descriptions.Item label="描述">{data.description}</Descriptions.Item>
-            <Descriptions.Item label="请求参数">{data.requestParams}</Descriptions.Item>
             <Descriptions.Item label="请求方法">{data.method}</Descriptions.Item>
+            <Descriptions.Item label="请求参数">{data.requestParams}</Descriptions.Item>
             <Descriptions.Item label="响应头">{data.responseHeader}</Descriptions.Item>
             <Descriptions.Item label="请求头">{data.requestHeader}</Descriptions.Item>
             <Descriptions.Item label="创建时间">{data.createTime}</Descriptions.Item>
@@ -240,7 +240,7 @@ const Index: React.FC = () => {
           </Form.Item>
         </Form>
       </Card>
-      <img src={invokeRes} />
+      <img src={invokeRes}  alt=""/>
       <Card title="返回信息" loading={invokeLoading}>
         {invokeRes}
       </Card>

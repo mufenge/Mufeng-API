@@ -1,5 +1,5 @@
 export default [
-  { path: '/', name: '主页', icon: 'smile', component: './Index' },
+  { path: '/', name: '主页', icon: 'home', component: './Index' },
   { path: '/user/account', name: '个人信息', icon: 'user', component: './User/Account' },
   { path: '/user/myinterface', name: '接口信息', icon: 'appstore', component: './User/MyInterface' },
   {
