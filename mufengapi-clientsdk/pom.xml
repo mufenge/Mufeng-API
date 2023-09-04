@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.mufeng</groupId>
-    <artifactId>mufengapi-client-sdk</artifactId>
+    <artifactId>mufengapi-clientsdk</artifactId>
     <version>0.0.3</version>
     <name>mufengapi-client-sdk</name>
     <description>mufengapi-client-sdk</description>
