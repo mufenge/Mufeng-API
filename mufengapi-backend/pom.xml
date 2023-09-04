@@ -19,7 +19,7 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>com.mufeng</groupId>
+            <groupId>io.github.mufenge</groupId>
             <artifactId>mufengapi-common</artifactId>
             <version>0.1</version>
         </dependency>
