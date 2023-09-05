@@ -251,36 +251,6 @@ public class InterfaceInfoController {
         return ResultUtils.success(result);
     }
 
-    /**
-     * 接口调用
-     *
-     * @param interfaceInfoInvokeRequest
-     * @param request
-     * @return
-     */
-    @PostMapping("/invoke")
-    public BaseResponse<String> invokeInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
-                                                    HttpServletRequest request) {
-
-        if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        long id = interfaceInfoInvokeRequest.getId();
-        String userRequestParams = interfaceInfoInvokeRequest.getUserRequestParams();
-        // 判断是否存在
-        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
-        if (oldInterfaceInfo == null) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
-        }
-        if (oldInterfaceInfo.getStatus() == InterfaceInfoStatusEnum.OFFLINE.getValue()) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已经关闭");
-        }
-        User loginuser = userService.getLoginUser(request);
-        MufengAPIClient tempClient = new MufengAPIClient(userRequestParams);
-        String usernameByPost = tempClient.getUsernameByPost(loginuser);
-        return ResultUtils.success(usernameByPost);
-    }
-
     // endregion
 
 }

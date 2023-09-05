@@ -37,16 +37,6 @@ public class MufengAPIClient {
         hashmap.put("params", params);
         return hashmap;
     }
-
-    public String getUsernameByPost(User user) {
-        String json = JSONUtil.toJsonStr(user);
-        String userAccount = user.getUserAccount();
-        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/name/user")
-                .addHeaders(getHeaderMap(userAccount))
-                .body(json)
-                .execute();
-        return httpResponse.body();
-    }
     public String getRandomImage(String params,String userAccount){
         String json = JSONUtil.toJsonStr(params);
         HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/interface/getRandomImage")
