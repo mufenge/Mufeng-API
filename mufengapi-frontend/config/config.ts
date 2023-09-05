@@ -136,7 +136,7 @@ export default defineConfig({
   openAPI: [
     {
       requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath: 'http://localhost:7529/api/v3/api-docs',
+      schemaPath: 'https://springboot-pq2n-67608-4-1320422627.sh.run.tcloudbase.com/api/v3/api-docs',
       projectName: 'mufengapi-backend',
     },
   ],

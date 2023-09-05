@@ -59,21 +59,6 @@ export async function emailLoginUsingPOST(
   });
 }
 
-/** userEmailRegister POST /api/user/emailRegister */
-export async function userEmailRegisterUsingPOST(
-  body: API.UserEmailRegisterRequest,
-  options?: { [key: string]: any },
-) {
-  return request<API.BaseResponselong>('/api/user/emailRegister', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: body,
-    ...(options || {}),
-  });
-}
-
 /** getUserById GET /api/user/get */
 export async function getUserByIdUsingGET(options?: { [key: string]: any }) {
   return request<API.BaseResponseUserVO>('/api/user/get', {
@@ -164,21 +149,6 @@ export async function sendMailUsingPOST(
   options?: { [key: string]: any },
 ) {
   return request<boolean>('/api/user/sendEmail', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: body,
-    ...(options || {}),
-  });
-}
-
-/** updateUser POST /api/user/update */
-export async function updateUserUsingPOST(
-  body: API.UserUpdateRequest,
-  options?: { [key: string]: any },
-) {
-  return request<API.BaseResponseboolean>('/api/user/update', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

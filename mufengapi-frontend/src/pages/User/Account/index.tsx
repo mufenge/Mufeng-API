@@ -1,35 +1,79 @@
-import {
-  changeUserPwdUsingPOST,
-  getUserByIdUsingGET,
-} from '@/services/mufengapi-backend/userController';
-import {useModel} from '@@/exports';
-import {PageContainer} from '@ant-design/pro-components';
-import { Card, Descriptions, message } from 'antd';
-import Button from 'antd/lib/button';
-import React, { useEffect, useState } from 'react';
 import ChangePwdModal from "@/pages/Admin/InterfaceInfo/components/ChangePwdModal";
+import { requestConfig } from '@/requestConfig';
+import { LoadingOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons';
+import { PageContainer } from "@ant-design/pro-components";
+import {
+  Avatar,
+  Button,
+  Card,
+  Descriptions,
+  message,
+  Space, Typography, Upload, UploadFile, UploadProps
+} from 'antd';
+import { useEffect,useState } from "react";
+import { RcFile, UploadChangeParam } from 'antd/es/upload';
+import { useModel } from '@@/exports';
+import {changeUserPwdUsingPOST, getUserByIdUsingGET} from "@/services/mufengapi-backend/userController";
+
+const { Paragraph } = Typography;
+
+const getBase64 = (img: RcFile, callback: (url: string) => void) => {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result as string));
+  reader.readAsDataURL(img);
+};
+const beforeUpload = (file: RcFile) => {
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  if (!isJpgOrPng) {
+    message.error('You can only upload JPG/PNG file!');
+  }
+  const isLt3M = file.size / 1024 / 1024 < 3;
+  if (!isLt3M) {
+    message.error('Image must smaller than 2MB!');
+  }
+  return isJpgOrPng && isLt3M;
+};
+
 
 const Index: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { initialState } = useModel('@@initialState');
   const [data, setData] = useState<API.UserVO>();
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [ApplyModalOpen, handleApplyModalOpen] = useState<boolean>(false);
   const columns = [
     {
       title: '新密码',
       dataIndex: 'userPassword',
-      valueType: 'number',
-
+      valueType: 'password',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            pattern: /^.{6,16}$/,
+            message: '密码必须大于6个字符且小于16个字符！',
+          },
+        ],
+      },
     },
     {
       title: '确认密码',
       dataIndex: 'checkPassword',
-      valueType: 'number',
+      valueType: 'password',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            pattern: /^.{6,16}$/,
+            message: '密码必须大于6个字符且小于16个字符！',
+          },
+        ],
+      },
     },
   ]
   // @ts-ignore
   const { loginUser } = initialState;
-
+  const [imageUrl, setImageUrl] =  useState<string | null>(loginUser?.userAvatar ?? null);
   const loadData = async () => {
     setLoading(true);
     try {
@@ -41,8 +85,25 @@ const Index: React.FC = () => {
     setLoading(false);
     return;
   };
+  const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
+    if (info.file.status === 'uploading') {
+      setLoading(true);
+      return;
+    }
+    if (info.file.status === 'done') {
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj as RcFile, (url) => {
+        setLoading(false);
+        setImageUrl(url);
+      });
+    }
+  };
+  const applyToDev = async () => {
+
+  };
 
   const handleChangePwd = async (fields: API.User) => {
+
     const hide = message.loading('修改中');
     try {
       await changeUserPwdUsingPOST({
@@ -67,17 +128,75 @@ const Index: React.FC = () => {
   return (
     <>
       <PageContainer title="个人账号信息" loading={loading}>
-        <Card>
-          {data ? (
-            <Descriptions column={2}>
-              <Descriptions.Item label="用户名">{data.userAccount}</Descriptions.Item>
-              <Descriptions.Item label="用户角色">{data.userRole}</Descriptions.Item>
-              <Descriptions.Item label="用户Id">{data.id}</Descriptions.Item>
-              <Descriptions.Item label="创建时间">{data.createTime}</Descriptions.Item>
+        <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
+          <Card
+              title="个人信息"
+              actions={[
+                <b key="gender">性别：{loginUser?.gender === ('0' ?? null) ? '女' : '男'}</b>,
+                <b key="time">创建时间：{loginUser?.createTime?? null}</b>,
+                <b key="role">身份：{loginUser?.userRole?? null === 'admin' ? '管理员' : '普通用户'}</b>,
+              ]}
+          >
+            <Card.Meta
+                avatar={
+                  <>
+                    <Upload
+                        name="file"
+                        // listType="picture-card"
+                        className="avatar-uploader"
+                        showUploadList={false}
+                        maxCount={1}
+                        withCredentials={true}
+                        action={requestConfig.baseURL + '/api/user/update/avatar'}
+                        beforeUpload={beforeUpload}
+                        onChange={handleChange}
+                    >
+                      {imageUrl ? (
+                          <Avatar
+                              size={{ xs: 30, sm: 40, md: 48, lg: 70, xl: 88, xxl: 100 }}
+                              src={imageUrl}
+                              icon={<UserOutlined />}
+                          />
+                      ) : (
+                          <div>
+                            {loading ? <LoadingOutlined /> : <PlusOutlined />}
+                            <div style={{ marginTop: 8 }}>上传头像</div>
+                          </div>
+                      )}
+                    </Upload>
+                  </>
+                }
+                title={loginUser?.userName?? null}
+                description={'账号：' + loginUser?.userAccount?? null}
+            />
+          </Card>
+
+          <Card
+              title="开发者密钥（申请成为开发者后可获取！）"
+              extra={
+                <>
+                  <Space>
+                    <Button onClick={applyToDev}>申请成为开发者</Button>
+                  </Space>
+                </>
+              }
+          >
+            <Descriptions column={1} bordered size="small" layout="vertical">
+              <Descriptions.Item label="accessKey">
+                <Paragraph copyable={{ tooltips: false }}>
+                  { '******************'}
+                </Paragraph>
+              </Descriptions.Item>
+              <Descriptions.Item label="secretKey">
+                <Paragraph copyable={{ tooltips: false }}>
+                  {'******************'}
+                </Paragraph>
+              </Descriptions.Item>
             </Descriptions>
-          ) : (
-            <>接口不存在</>
-          )}
+          </Card>
+        </Space>
+
+        <Card>
           <Button
             type="primary"
             key="primary"
@@ -93,6 +212,7 @@ const Index: React.FC = () => {
           //@ts-ignore
           columns={columns}
           onSubmit={async (value) => {
+
             const success = await handleChangePwd(value);
             if (success) {
               handleUpdateModalOpen(false);

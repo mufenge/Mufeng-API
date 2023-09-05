@@ -143,7 +143,7 @@ const Register: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    pattern: /^.{3,16}$/,
+                    pattern: /^.{6,16}$/,
                     message: '两次密码必须一致！',
                   },
                 ]}
