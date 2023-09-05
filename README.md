@@ -25,34 +25,6 @@
 在上面的过程中，我提到了鉴权、校验、查询用户、查询secret Key"等操作，这些操作对应的代码是在backend项目中，如果我们直接把对应的代码放到gateway项目，势必会增加项目的复杂度以及冗余等。所以我想到了使用Dubbo这样一个RPC框架，通过@Enable Dubbo、@Dubbo Reference、@Dubbo Service等注解，配置相应的yml属性，并以Nacos作为服务的注册中心，实现了远程业务代码的调用。
 此外项目还使用了sentinel对主要接口进行熔断和限流。
 
-## 项目展示
-
-- 登录页
-
-![](C:\Users\lenovo\AppData\Roaming\marktext\images\2023-09-05-14-59-20-image.png)
-
-- 主页
-
-<img title="" src="file:///C:/Users/lenovo/AppData/Roaming/marktext/images/2023-09-05-15-00-04-image.png" alt="" data-align="inline">
-
-- 接口调用
-
-![](C:\Users\lenovo\AppData\Roaming\marktext\images\2023-09-05-15-00-25-image.png)
-
-- 接口管理
-
-![](C:\Users\lenovo\AppData\Roaming\marktext\images\2023-09-05-15-03-06-image.png)
-
-- 接口分析
-
-![](C:\Users\lenovo\AppData\Roaming\marktext\images\2023-09-05-15-03-39-image.png)
-
-- 接口信息
-
-![](C:\Users\lenovo\AppData\Roaming\marktext\images\2023-09-05-15-05-45-image.png)
-
-- 个人中心
-
 ## 项目背景
 
 &emsp;&emsp;我的初衷是尽可能帮助和服务更多的用户和开发者，让他们更加方便快捷的获取他们想要的信息和功能。
