@@ -1,19 +1,27 @@
-import ChangePwdModal from "@/pages/Admin/InterfaceInfo/components/ChangePwdModal";
+import ApplyToDevModal from '@/pages/Admin/InterfaceInfo/components/ApplyToDevModal';
+import ChangePwdModal from '@/pages/Admin/InterfaceInfo/components/ChangePwdModal';
 import { requestConfig } from '@/requestConfig';
+import {
+  changeUserPwdUsingPOST,
+  getUserByIdUsingGET,
+} from '@/services/mufengapi-backend/userController';
+import { useModel } from '@@/exports';
 import { LoadingOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons';
-import { PageContainer } from "@ant-design/pro-components";
+import { PageContainer } from '@ant-design/pro-components';
 import {
   Avatar,
   Button,
   Card,
   Descriptions,
   message,
-  Space, Typography, Upload, UploadFile, UploadProps
+  Space,
+  Typography,
+  Upload,
+  UploadFile,
+  UploadProps,
 } from 'antd';
-import { useEffect,useState } from "react";
 import { RcFile, UploadChangeParam } from 'antd/es/upload';
-import { useModel } from '@@/exports';
-import {changeUserPwdUsingPOST, getUserByIdUsingGET} from "@/services/mufengapi-backend/userController";
+import { useEffect, useState } from 'react';
 
 const { Paragraph } = Typography;
 
@@ -34,13 +42,48 @@ const beforeUpload = (file: RcFile) => {
   return isJpgOrPng && isLt3M;
 };
 
-
 const Index: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { initialState } = useModel('@@initialState');
   const [data, setData] = useState<API.UserVO>();
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [ApplyModalOpen, handleApplyModalOpen] = useState<boolean>(false);
+  const colums1 = [
+    {
+      title: '名称：',
+      dataIndex: 'name',
+      valueType: 'text',
+    },
+    {
+      title: '邮箱：',
+      dataIndex: 'email',
+      valueType: 'text',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+          },
+        ],
+      },
+    },
+    {
+      title: 'QQ:',
+      dataIndex: 'QQ',
+      valueType: 'text',
+    },
+    {
+      title: '申请理由：',
+      dataIndex: 'reason',
+      valueType: 'text',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+          },
+        ],
+      },
+    },
+  ];
   const columns = [
     {
       title: '新密码',
@@ -70,10 +113,10 @@ const Index: React.FC = () => {
         ],
       },
     },
-  ]
+  ];
   // @ts-ignore
   const { loginUser } = initialState;
-  const [imageUrl, setImageUrl] =  useState<string | null>(loginUser?.userAvatar ?? null);
+  const [imageUrl, setImageUrl] = useState<string | null>(loginUser?.userAvatar ?? null);
   const loadData = async () => {
     setLoading(true);
     try {
@@ -98,18 +141,15 @@ const Index: React.FC = () => {
       });
     }
   };
-  const applyToDev = async () => {
-
-  };
+  const applyToDev = async () => {};
 
   const handleChangePwd = async (fields: API.User) => {
-
     const hide = message.loading('修改中');
     try {
       await changeUserPwdUsingPOST({
         // @ts-ignore
         Id: loginUser.id,
-        ...fields
+        ...fields,
       });
       hide();
       message.success('修改成功');
@@ -124,95 +164,96 @@ const Index: React.FC = () => {
     loadData();
   }, []);
 
-  // @ts-ignore
   return (
     <>
       <PageContainer title="个人账号信息" loading={loading}>
         <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
           <Card
-              title="个人信息"
-              actions={[
-                <b key="gender">性别：{loginUser?.gender === ('0' ?? null) ? '女' : '男'}</b>,
-                <b key="time">创建时间：{loginUser?.createTime?? null}</b>,
-                <b key="role">身份：{loginUser?.userRole?? null === 'admin' ? '管理员' : '普通用户'}</b>,
-              ]}
+            title=""
+            actions={[
+              <b key="gender">性别：{loginUser?.gender === ('0' ?? null) ? '女' : '男'}</b>,
+              <b key="time">创建时间：{loginUser?.createTime ?? null}</b>,
+              <b key="role">
+                身份：{loginUser?.userRole ?? null === 'admin' ? '管理员' : '普通用户'}
+              </b>,
+            ]}
           >
             <Card.Meta
-                avatar={
-                  <>
-                    <Upload
-                        name="file"
-                        // listType="picture-card"
-                        className="avatar-uploader"
-                        showUploadList={false}
-                        maxCount={1}
-                        withCredentials={true}
-                        action={requestConfig.baseURL + '/api/user/update/avatar'}
-                        beforeUpload={beforeUpload}
-                        onChange={handleChange}
-                    >
-                      {imageUrl ? (
-                          <Avatar
-                              size={{ xs: 30, sm: 40, md: 48, lg: 70, xl: 88, xxl: 100 }}
-                              src={imageUrl}
-                              icon={<UserOutlined />}
-                          />
-                      ) : (
-                          <div>
-                            {loading ? <LoadingOutlined /> : <PlusOutlined />}
-                            <div style={{ marginTop: 8 }}>上传头像</div>
-                          </div>
-                      )}
-                    </Upload>
-                  </>
-                }
-                title={loginUser?.userName?? null}
-                description={'账号：' + loginUser?.userAccount?? null}
-            />
-          </Card>
-
-          <Card
-              title="开发者密钥（申请成为开发者后可获取！）"
-              extra={
+              avatar={
                 <>
-                  <Space>
-                    <Button onClick={applyToDev}>申请成为开发者</Button>
-                  </Space>
+                  <Upload
+                    name="file"
+                    // listType="picture-card"
+                    className="avatar-uploader"
+                    showUploadList={false}
+                    maxCount={1}
+                    withCredentials={true}
+                    action={requestConfig.baseURL + '/api/user/update/avatar'}
+                    beforeUpload={beforeUpload}
+                    onChange={handleChange}
+                  >
+                    {imageUrl ? (
+                      <Avatar
+                        size={{ xs: 30, sm: 40, md: 48, lg: 70, xl: 88, xxl: 100 }}
+                        src={imageUrl}
+                        icon={<UserOutlined />}
+                      />
+                    ) : (
+                      <div>
+                        {loading ? <LoadingOutlined /> : <PlusOutlined />}
+                        <div style={{ marginTop: 8 }}>上传头像</div>
+                      </div>
+                    )}
+                  </Upload>
                 </>
               }
+              title={loginUser?.userName ?? null}
+              description={'账号：' + loginUser?.userAccount ?? null}
+            />
+          </Card>
+          <Card>
+            <Button
+                type="primary"
+                key="primary"
+                onClick={() => {
+                  handleUpdateModalOpen(true);
+                }}
+            >
+              修改密码
+            </Button>
+          </Card>
+          <Card
+            title="开发者密钥（申请成为开发者后可获取！）"
+            extra={
+              <>
+                <Space>
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      handleApplyModalOpen(true);
+                    }}
+                  >
+                    申请成为开发者
+                  </Button>
+                </Space>
+              </>
+            }
           >
             <Descriptions column={1} bordered size="small" layout="vertical">
               <Descriptions.Item label="accessKey">
-                <Paragraph copyable={{ tooltips: false }}>
-                  { '******************'}
-                </Paragraph>
+                <Paragraph copyable={{ tooltips: false }}>{'******************'}</Paragraph>
               </Descriptions.Item>
               <Descriptions.Item label="secretKey">
-                <Paragraph copyable={{ tooltips: false }}>
-                  {'******************'}
-                </Paragraph>
+                <Paragraph copyable={{ tooltips: false }}>{'******************'}</Paragraph>
               </Descriptions.Item>
             </Descriptions>
           </Card>
         </Space>
 
-        <Card>
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              handleUpdateModalOpen(true);
-            }}
-          >
-             修改密码
-          </Button>
-        </Card>
-        <br />
         <ChangePwdModal
           //@ts-ignore
           columns={columns}
           onSubmit={async (value) => {
-
             const success = await handleChangePwd(value);
             if (success) {
               handleUpdateModalOpen(false);
@@ -223,8 +264,19 @@ const Index: React.FC = () => {
           }}
           visible={updateModalOpen}
         />
+        <ApplyToDevModal
+          //@ts-ignore
+          columns={colums1}
+          onCancel={() => {
+            handleApplyModalOpen(false);
+          }}
+          onSubmit={async () => {
+            await applyToDev();
+            handleUpdateModalOpen(false);
+          }}
+          visible={ApplyModalOpen}
+        />
         <br />
-
       </PageContainer>
     </>
   );

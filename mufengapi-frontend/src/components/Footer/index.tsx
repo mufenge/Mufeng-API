@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
         {
           key: 'Mufenge',
           title: 'Mufenge',
-          href: 'https://github.com/mufenge',
+          href: 'https://mufenge.top',
           blankTarget: true,
         },
       ]}

@@ -1,7 +1,7 @@
 import { ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-table/lib';
 import { Modal } from 'antd';
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import {ProFormInstance} from "@ant-design/pro-form/lib";
 
 export type Props = {
@@ -13,15 +13,9 @@ export type Props = {
 };
 
 const ApplyToDevModal: React.FC<Props> = (props) => {
-  const { values, visible, columns, onCancel, onSubmit } = props;
+  const {  visible, columns, onCancel, onSubmit } = props;
 
   const formRef = useRef<ProFormInstance>();
-  useEffect(() => {
-    if(formRef){
-      formRef.current?.setFieldsValue(values);
-    }
-
-  }, [values]);
 
   return (
     <Modal open={visible} onCancel={() => onCancel?.()} footer={null}>
