@@ -7,12 +7,6 @@ declare namespace API {
     userAccount?: string;
   };
 
-  type BaseResponse = {
-    code?: number;
-    data?: Record<string, any>;
-    message?: string;
-  };
-
   type BaseResponseboolean = {
     code?: number;
     data?: boolean;
@@ -22,6 +16,12 @@ declare namespace API {
   type BaseResponseInterfaceInfo = {
     code?: number;
     data?: InterfaceInfo;
+    message?: string;
+  };
+
+  type BaseResponseKeyVO = {
+    code?: number;
+    data?: KeyVO;
     message?: string;
   };
 
@@ -173,6 +173,11 @@ declare namespace API {
     updateTime?: string;
     url?: string;
     userId?: string;
+  };
+
+  type KeyVO = {
+    accessKey?: string;
+    secretKey?: string;
   };
 
   type listInterfaceInfoByPageUsingGETParams = {

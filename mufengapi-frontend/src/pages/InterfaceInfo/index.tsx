@@ -13,7 +13,6 @@ import {
 import { PageContainer } from '@ant-design/pro-components';
 import {Button, Card, Descriptions, Form, message, Tag} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import {getInsertNumUsingPOST} from "@/services/mufengapi-backend/userInterfaceInfoController";
@@ -66,12 +65,14 @@ const Index: React.FC = () => {
 
     // @ts-ignore
     let interfaceId = data.id;
+    const hide = message.loading('接口调用中，请勿再次点击！');
     if (interfaceId === 1) {
       try {
         const res = await invokeRandomImageInterfaceUsingPOST({
           id: params.id,
           ...values,
         });
+        hide();
         setinvokeRes(res.data);
         if (res.data){
           message.success('请求成功');
@@ -79,6 +80,7 @@ const Index: React.FC = () => {
           message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
+        hide();
         return false;
       }
       setInvokeLoading(false);
@@ -89,10 +91,12 @@ const Index: React.FC = () => {
           id: params.id,
           ...values,
         });
+        hide();
         setinvokeRes(res.data);
         if (res.data){
           message.success('请求成功');
         }else {
+          hide();
           message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
@@ -106,6 +110,7 @@ const Index: React.FC = () => {
           id: params.id,
           ...values,
         });
+        hide();
         setinvokeRes(res.data);
         if (res.data){
           message.success('请求成功');
@@ -113,6 +118,7 @@ const Index: React.FC = () => {
           message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
+        hide();
         return false;
       }
       setInvokeLoading(false);
@@ -123,6 +129,7 @@ const Index: React.FC = () => {
           id: params.id,
           ...values,
         });
+        hide();
         setinvokeRes(res.data);
         if (res.data){
           message.success('请求成功');
@@ -130,6 +137,7 @@ const Index: React.FC = () => {
           message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
+        hide();
         return false;
       }
       setInvokeLoading(false);
@@ -140,6 +148,7 @@ const Index: React.FC = () => {
           id: params.id,
           ...values,
         });
+        hide();
         setinvokeRes(res.data);
         if (res.data){
           message.success('请求成功');
@@ -147,6 +156,7 @@ const Index: React.FC = () => {
           message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
+        hide();
         return false;
       }
       setInvokeLoading(false);
@@ -157,6 +167,7 @@ const Index: React.FC = () => {
           id: params.id,
           ...values,
         });
+        hide();
         setinvokeRes(res.data);
         if (res.data){
           message.success('请求成功');
@@ -164,6 +175,7 @@ const Index: React.FC = () => {
           message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
+        hide();
         return false;
       }
       setInvokeLoading(false);
@@ -174,6 +186,7 @@ const Index: React.FC = () => {
           id: params.id,
           ...values,
         });
+        hide();
         setinvokeRes(res.data);
         if (res.data){
           message.success('请求成功');
@@ -181,6 +194,7 @@ const Index: React.FC = () => {
           message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
+        hide();
         return false;
       }
       setInvokeLoading(false);
@@ -191,6 +205,7 @@ const Index: React.FC = () => {
           id: params.id,
           ...values,
         });
+        hide();
         setinvokeRes(res.data);
         if (res.data){
           message.success('请求成功');
@@ -198,6 +213,7 @@ const Index: React.FC = () => {
           message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
+        hide();
         return false;
       }
       setInvokeLoading(false);

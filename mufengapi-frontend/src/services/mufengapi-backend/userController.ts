@@ -67,6 +67,14 @@ export async function getUserByIdUsingGET(options?: { [key: string]: any }) {
   });
 }
 
+/** getKey GET /api/user/get/key */
+export async function getKeyUsingGET(options?: { [key: string]: any }) {
+  return request<API.BaseResponseKeyVO>('/api/user/get/key', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** getLoginUser GET /api/user/get/login */
 export async function getLoginUserUsingGET(options?: { [key: string]: any }) {
   return request<API.BaseResponseUserVO>('/api/user/get/login', {

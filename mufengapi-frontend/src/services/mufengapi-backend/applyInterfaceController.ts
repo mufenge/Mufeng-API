@@ -7,7 +7,7 @@ export async function applyInterfaceUsingPOST(
   body: API.ApplyInterfaceRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponse>('/api/apply', {
+  return request<API.BaseResponseboolean>('/api/apply', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

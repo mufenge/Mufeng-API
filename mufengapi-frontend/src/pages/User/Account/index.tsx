@@ -2,12 +2,14 @@ import ApplyToDevModal from '@/pages/Admin/InterfaceInfo/components/ApplyToDevMo
 import ChangePwdModal from '@/pages/Admin/InterfaceInfo/components/ChangePwdModal';
 import { applyInterfaceUsingPOST } from '@/services/mufengapi-backend/applyInterfaceController';
 import {
-  changeUserPwdUsingPOST,
+  changeUserPwdUsingPOST, getKeyUsingGET,
   getUserByIdUsingGET,
+  userLogoutUsingPOST,
 } from '@/services/mufengapi-backend/userController';
-import { useModel } from '@@/exports';
+import { history, useModel } from '@@/exports';
 import { PageContainer } from '@ant-design/pro-components';
 import { Button, Card, Descriptions, message, Space, Typography } from 'antd';
+import { stringify } from 'querystring';
 import React, { useEffect, useState } from 'react';
 
 const { Paragraph } = Typography;
@@ -15,12 +17,13 @@ const Index: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { initialState } = useModel('@@initialState');
   const [data, setData] = useState<API.UserVO>();
+  const [key,setKey] = useState<API.KeyVO>();
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [ApplyModalOpen, handleApplyModalOpen] = useState<boolean>(false);
   const colums1 = [
     {
       title: '接口名称：',
-      dataIndex: 'InterfaceName',
+      dataIndex: 'name',
       valueType: 'text',
     },
     {
@@ -96,6 +99,33 @@ const Index: React.FC = () => {
     setLoading(false);
     return;
   };
+  const loadKey = async () => {
+    try {
+      const res = await getKeyUsingGET();
+      console.log(res)
+      console.log(res.data)
+      setKey(res.data);
+    } catch (e: any) {
+      message.error('获取数据失败，' + e.message);
+    }
+    return;
+  };
+
+  const loginOut = async () => {
+    await userLogoutUsingPOST();
+    const { search, pathname } = window.location;
+    const urlParams = new URL(window.location.href).searchParams;
+    /** 此方法会跳转到 redirect 参数所在的位置 */
+    const redirect = urlParams.get('redirect');
+    if (window.location.pathname !== '/user/login' && !redirect) {
+      history.replace({
+        pathname: '/user/login',
+        search: stringify({
+          redirect: pathname + search,
+        }),
+      });
+    }
+  };
 
   const applyToDev = async (fields: API.ApplyInterfaceRequest) => {
     const hide = message.loading('申请中！');
@@ -105,6 +135,7 @@ const Index: React.FC = () => {
         ...fields,
       });
       hide();
+
       message.success('申请成功！');
       return true;
     } catch (error: any) {
@@ -113,7 +144,9 @@ const Index: React.FC = () => {
       return false;
     }
   };
-
+  const getASKey = () => {
+    loadKey();
+  };
   const handleChangePwd = async (fields: API.User) => {
     const hide = message.loading('修改中');
     try {
@@ -123,7 +156,8 @@ const Index: React.FC = () => {
         ...fields,
       });
       hide();
-      message.success('修改成功');
+      message.success('修改成功,请重新登录！');
+      loginOut();
       return true;
     } catch (error) {
       hide();
@@ -131,15 +165,15 @@ const Index: React.FC = () => {
       return false;
     }
   };
-
-  const maven = "<dependency>\n" +
-      "  <groupId>io.github.mufenge</groupId>\n" +
-      "  <artifactId>mufengapi-clientsdk</artifactId>\n" +
-      "  <version>1.0</version>\n" +
-      "</dependency>";
   useEffect(() => {
     loadData();
   }, []);
+  const maven =
+    '<dependency>\n' +
+    '  <groupId>io.github.mufenge</groupId>\n' +
+    '  <artifactId>mufengapi-clientsdk</artifactId>\n' +
+    '  <version>1.0</version>\n' +
+    '</dependency>';
 
   return (
     <>
@@ -147,43 +181,42 @@ const Index: React.FC = () => {
         <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
           <Card>
             <Descriptions
-                column={4}
+              column={4}
               title="个人信息"
               size="default"
               layout="horizontal"
-              extra={            <Button
-                  type="primary"
+              extra={
+                <Button
                   key="primary"
                   onClick={() => {
                     handleUpdateModalOpen(true);
                   }}
-              >
-                修改密码
-              </Button>}
+                >
+                  修改密码
+                </Button>
+              }
             >
               <Descriptions.Item label="名称">{loginUser?.userAccount}</Descriptions.Item>
               <Descriptions.Item label="性别">
                 {loginUser?.gender === ('0' ?? null) ? '女' : '男'}
               </Descriptions.Item>
               <Descriptions.Item label="身份">
-                {loginUser?.userRole ?? null === 'admin' ? '管理员' : '普通用户'}
+                {data?.userRole ?? null === 'admin' ? '管理员' : '普通用户'}
               </Descriptions.Item>
               <Descriptions.Item label="创建时间">{loginUser?.createTime}</Descriptions.Item>
             </Descriptions>
-
           </Card>
           <Card
             title="开发者密钥（导入sdk配置ak、sk即可调用接口）"
             extra={
               <>
                 <Space>
+                  <Button onClick={getASKey}>显示密钥</Button>
                   <Button
-                    type="primary"
                     onClick={() => {
                       handleApplyModalOpen(true);
                     }}
-                  >
-                    欢迎申请添加接口
+                  >欢迎申请添加接口
                   </Button>
                 </Space>
               </>
@@ -191,13 +224,17 @@ const Index: React.FC = () => {
           >
             <Descriptions column={1} bordered size="small" layout="vertical">
               <Descriptions.Item label="accessKey">
-                <Paragraph copyable={{ tooltips: false }}>{loginUser?.accessKey}</Paragraph>
+                <Paragraph copyable={{ tooltips: false }}>
+                  {key?.accessKey ?? '******************'}
+                </Paragraph>
               </Descriptions.Item>
               <Descriptions.Item label="secretKey">
-                <Paragraph copyable={{ tooltips: false }}>{loginUser?.secretKey}</Paragraph>
+                <Paragraph copyable={{ tooltips: false }}>
+                  {key?.secretKey ?? '******************'}
+                </Paragraph>
               </Descriptions.Item>
-              <Descriptions.Item label="maven依赖">
-                <Paragraph copyable={{ tooltips: false }}>{maven}</Paragraph>
+              <Descriptions.Item label="sdk依赖">
+                <Paragraph copyable={true}>{maven}</Paragraph>
               </Descriptions.Item>
             </Descriptions>
           </Card>
