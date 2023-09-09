@@ -1,7 +1,8 @@
 export default [
   { path: '/', name: '主页', icon: 'home', component: './Index' },
-  { path: '/user/account', name: '个人信息', icon: 'user', component: './User/Account' },
-  { path: '/user/myinterface', name: '接口信息', icon: 'appstore', component: './User/MyInterface' },
+  { path: '/user/account', name: '个人中心', icon: 'user', component: './User/Account' },
+  { path: '/user/myinterface', name: '个人接口', icon: 'appstore', component: './User/MyInterface' },
+  { path: '/interface_analysis',name: '热门接口', icon: 'BarChart',component: './InterfaceAnalysis'},
   {
     path: '/interface_info/:id',
     component: './InterfaceInfo',
@@ -26,11 +27,6 @@ export default [
         name: '接口管理',
         path: '/admin/interface_info',
         component: './Admin/InterfaceInfo',
-      },
-      {
-        name: '接口分析',
-        path: '/admin/interface_analysis',
-        component: './Admin/InterfaceAnalysis',
       },
     ],
   },

@@ -92,8 +92,8 @@ export async function invokeRandomCXKInterfaceUsingPOST(
   });
 }
 
-/** invokeCommonInterface POST /api/interface/getRandomImage */
-export async function invokeCommonInterfaceUsingPOST(
+/** invokeRandomImageInterface POST /api/interface/getRandomImage */
+export async function invokeRandomImageInterfaceUsingPOST(
   body: API.InterfaceInfoInvokeRequest,
   options?: { [key: string]: any },
 ) {

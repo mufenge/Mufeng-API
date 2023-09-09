@@ -1,4 +1,18 @@
 declare namespace API {
+  type ApplyInterfaceRequest = {
+    address?: string;
+    contact?: string;
+    introduction?: string;
+    name?: string;
+    userAccount?: string;
+  };
+
+  type BaseResponse = {
+    code?: number;
+    data?: Record<string, any>;
+    message?: string;
+  };
+
   type BaseResponseboolean = {
     code?: number;
     data?: boolean;
@@ -417,6 +431,7 @@ declare namespace API {
     create_time?: string;
     id?: number;
     interfaceInfoId?: number;
+    interfaceInfoName?: string;
     is_deleted?: number;
     leftNum?: number;
     status?: number;

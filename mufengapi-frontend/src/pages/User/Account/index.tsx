@@ -1,47 +1,16 @@
 import ApplyToDevModal from '@/pages/Admin/InterfaceInfo/components/ApplyToDevModal';
 import ChangePwdModal from '@/pages/Admin/InterfaceInfo/components/ChangePwdModal';
-import { requestConfig } from '@/requestConfig';
+import { applyInterfaceUsingPOST } from '@/services/mufengapi-backend/applyInterfaceController';
 import {
   changeUserPwdUsingPOST,
   getUserByIdUsingGET,
 } from '@/services/mufengapi-backend/userController';
 import { useModel } from '@@/exports';
-import { LoadingOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
-import {
-  Avatar,
-  Button,
-  Card,
-  Descriptions,
-  message,
-  Space,
-  Typography,
-  Upload,
-  UploadFile,
-  UploadProps,
-} from 'antd';
-import { RcFile, UploadChangeParam } from 'antd/es/upload';
-import { useEffect, useState } from 'react';
+import { Button, Card, Descriptions, message, Space, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
 
 const { Paragraph } = Typography;
-
-const getBase64 = (img: RcFile, callback: (url: string) => void) => {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result as string));
-  reader.readAsDataURL(img);
-};
-const beforeUpload = (file: RcFile) => {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) {
-    message.error('You can only upload JPG/PNG file!');
-  }
-  const isLt3M = file.size / 1024 / 1024 < 3;
-  if (!isLt3M) {
-    message.error('Image must smaller than 2MB!');
-  }
-  return isJpgOrPng && isLt3M;
-};
-
 const Index: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { initialState } = useModel('@@initialState');
@@ -50,13 +19,13 @@ const Index: React.FC = () => {
   const [ApplyModalOpen, handleApplyModalOpen] = useState<boolean>(false);
   const colums1 = [
     {
-      title: '名称：',
-      dataIndex: 'name',
+      title: '接口名称：',
+      dataIndex: 'InterfaceName',
       valueType: 'text',
     },
     {
-      title: '邮箱：',
-      dataIndex: 'email',
+      title: '联系方式：',
+      dataIndex: 'contact',
       valueType: 'text',
       formItemProps: {
         rules: [
@@ -67,13 +36,13 @@ const Index: React.FC = () => {
       },
     },
     {
-      title: 'QQ:',
-      dataIndex: 'QQ',
+      title: '接口地址：',
+      dataIndex: 'address',
       valueType: 'text',
     },
     {
-      title: '申请理由：',
-      dataIndex: 'reason',
+      title: '申请接口介绍：',
+      dataIndex: 'introduction',
       valueType: 'text',
       formItemProps: {
         rules: [
@@ -116,7 +85,6 @@ const Index: React.FC = () => {
   ];
   // @ts-ignore
   const { loginUser } = initialState;
-  const [imageUrl, setImageUrl] = useState<string | null>(loginUser?.userAvatar ?? null);
   const loadData = async () => {
     setLoading(true);
     try {
@@ -128,20 +96,23 @@ const Index: React.FC = () => {
     setLoading(false);
     return;
   };
-  const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
-    if (info.file.status === 'uploading') {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj as RcFile, (url) => {
-        setLoading(false);
-        setImageUrl(url);
+
+  const applyToDev = async (fields: API.ApplyInterfaceRequest) => {
+    const hide = message.loading('申请中！');
+    try {
+      await applyInterfaceUsingPOST({
+        userAccount: loginUser.userAccount,
+        ...fields,
       });
+      hide();
+      message.success('申请成功！');
+      return true;
+    } catch (error: any) {
+      hide();
+      message.error('申请失败！');
+      return false;
     }
   };
-  const applyToDev = async () => {};
 
   const handleChangePwd = async (fields: API.User) => {
     const hide = message.loading('修改中');
@@ -160,70 +131,49 @@ const Index: React.FC = () => {
       return false;
     }
   };
+
+  const maven = "<dependency>\n" +
+      "  <groupId>io.github.mufenge</groupId>\n" +
+      "  <artifactId>mufengapi-clientsdk</artifactId>\n" +
+      "  <version>1.0</version>\n" +
+      "</dependency>";
   useEffect(() => {
     loadData();
   }, []);
 
   return (
     <>
-      <PageContainer title="个人账号信息" loading={loading}>
+      <PageContainer title="个人中心" loading={loading}>
         <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-          <Card
-            title=""
-            actions={[
-              <b key="gender">性别：{loginUser?.gender === ('0' ?? null) ? '女' : '男'}</b>,
-              <b key="time">创建时间：{loginUser?.createTime ?? null}</b>,
-              <b key="role">
-                身份：{loginUser?.userRole ?? null === 'admin' ? '管理员' : '普通用户'}
-              </b>,
-            ]}
-          >
-            <Card.Meta
-              avatar={
-                <>
-                  <Upload
-                    name="file"
-                    // listType="picture-card"
-                    className="avatar-uploader"
-                    showUploadList={false}
-                    maxCount={1}
-                    withCredentials={true}
-                    action={requestConfig.baseURL + '/api/user/update/avatar'}
-                    beforeUpload={beforeUpload}
-                    onChange={handleChange}
-                  >
-                    {imageUrl ? (
-                      <Avatar
-                        size={{ xs: 30, sm: 40, md: 48, lg: 70, xl: 88, xxl: 100 }}
-                        src={imageUrl}
-                        icon={<UserOutlined />}
-                      />
-                    ) : (
-                      <div>
-                        {loading ? <LoadingOutlined /> : <PlusOutlined />}
-                        <div style={{ marginTop: 8 }}>上传头像</div>
-                      </div>
-                    )}
-                  </Upload>
-                </>
-              }
-              title={loginUser?.userName ?? null}
-              description={'账号：' + loginUser?.userAccount ?? null}
-            />
-          </Card>
           <Card>
-            <Button
-                type="primary"
-                key="primary"
-                onClick={() => {
-                  handleUpdateModalOpen(true);
-                }}
+            <Descriptions
+                column={4}
+              title="个人信息"
+              size="default"
+              layout="horizontal"
+              extra={            <Button
+                  type="primary"
+                  key="primary"
+                  onClick={() => {
+                    handleUpdateModalOpen(true);
+                  }}
+              >
+                修改密码
+              </Button>}
             >
-              修改密码
-            </Button>
+              <Descriptions.Item label="名称">{loginUser?.userAccount}</Descriptions.Item>
+              <Descriptions.Item label="性别">
+                {loginUser?.gender === ('0' ?? null) ? '女' : '男'}
+              </Descriptions.Item>
+              <Descriptions.Item label="身份">
+                {loginUser?.userRole ?? null === 'admin' ? '管理员' : '普通用户'}
+              </Descriptions.Item>
+              <Descriptions.Item label="创建时间">{loginUser?.createTime}</Descriptions.Item>
+            </Descriptions>
+
           </Card>
           <Card
-            title="开发者密钥（申请成为开发者后可获取！）"
+            title="开发者密钥（导入sdk配置ak、sk即可调用接口）"
             extra={
               <>
                 <Space>
@@ -233,7 +183,7 @@ const Index: React.FC = () => {
                       handleApplyModalOpen(true);
                     }}
                   >
-                    申请成为开发者
+                    欢迎申请添加接口
                   </Button>
                 </Space>
               </>
@@ -241,10 +191,13 @@ const Index: React.FC = () => {
           >
             <Descriptions column={1} bordered size="small" layout="vertical">
               <Descriptions.Item label="accessKey">
-                <Paragraph copyable={{ tooltips: false }}>{'******************'}</Paragraph>
+                <Paragraph copyable={{ tooltips: false }}>{loginUser?.accessKey}</Paragraph>
               </Descriptions.Item>
               <Descriptions.Item label="secretKey">
-                <Paragraph copyable={{ tooltips: false }}>{'******************'}</Paragraph>
+                <Paragraph copyable={{ tooltips: false }}>{loginUser?.secretKey}</Paragraph>
+              </Descriptions.Item>
+              <Descriptions.Item label="maven依赖">
+                <Paragraph copyable={{ tooltips: false }}>{maven}</Paragraph>
               </Descriptions.Item>
             </Descriptions>
           </Card>
@@ -270,9 +223,11 @@ const Index: React.FC = () => {
           onCancel={() => {
             handleApplyModalOpen(false);
           }}
-          onSubmit={async () => {
-            await applyToDev();
-            handleUpdateModalOpen(false);
+          onSubmit={async (values) => {
+            const success = await applyToDev(values as API.ApplyInterfaceRequest);
+            if (success) {
+              handleUpdateModalOpen(false);
+            }
           }}
           visible={ApplyModalOpen}
         />

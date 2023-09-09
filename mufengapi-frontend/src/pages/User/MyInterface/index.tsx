@@ -1,7 +1,8 @@
-import { getInvokeUserInfoUsingGET } from '@/services/mufengapi-backend/userInterfaceInfoController';
+
 import {PageContainer} from '@ant-design/pro-components';
 import { Card, Descriptions, List, message, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
+import {getInvokeUserInfoUsingGET} from "@/services/mufengapi-backend/userInterfaceInfoController";
 
 const Index: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -42,7 +43,7 @@ const Index: React.FC = () => {
           dataSource={list}
           renderItem={(item) => (
             <List.Item>
-              <Card title="调用接口信息">
+              <Card title={item.interfaceInfoName}>
                 <Descriptions column={1}>
                   <Descriptions.Item label="接口ID">{item.interfaceInfoId}</Descriptions.Item>
                   <Descriptions.Item label="账号状态">

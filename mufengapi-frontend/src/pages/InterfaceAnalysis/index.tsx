@@ -1,36 +1,31 @@
+import { listTopInvokeUsingGET } from '@/services/mufengapi-backend/analysisController';
 import { PageContainer } from '@ant-design/pro-components';
 import ReactECharts from 'echarts-for-react';
-import React, {useEffect, useState} from 'react';
-import {listTopInvokeUsingGET} from "@/services/mufengapi-backend/analysisController";
+import React, { useEffect, useState } from 'react';
 
 const InterfaceAnalysis: React.FC = () => {
-  const [data,setData] = useState<API.InterfaceInfoVO[]>([]);
-  const [loading] = useState(true)
-  useEffect(()=>{
+  const [data, setData] = useState<API.InterfaceInfoVO[]>([]);
+  const [loading] = useState(true);
+  useEffect(() => {
     try {
-
-      listTopInvokeUsingGET().then(res =>{
-        if(res.data){
+      listTopInvokeUsingGET().then((res) => {
+        if (res.data) {
           setData(res.data);
         }
-      })
-    } catch (e: any){
+      });
+    } catch (e: any) {}
+  }, []);
 
-    }
-
-
-  },[])
-
-  const chartData = data.map(item =>{
-    return{
+  const chartData = data.map((item) => {
+    return {
       value: item.totalNum,
       name: item.name,
-    }
-  })
+    };
+  });
 
   const option = {
     title: {
-      text: '调用接口次数TOP3',
+      text: '热门接口',
       left: 'center',
     },
     tooltip: {
@@ -59,9 +54,13 @@ const InterfaceAnalysis: React.FC = () => {
 
   return (
     <PageContainer>
-      <ReactECharts loadingOption={{
-        showLoading: loading
-      }} option={option} />
+      <ReactECharts
+        style={{ width: '100%', height: '400px' }}
+        loadingOption={{
+          showLoading: loading,
+        }}
+        option={option}
+      />
     </PageContainer>
   );
 };

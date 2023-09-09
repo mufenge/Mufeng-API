@@ -1,11 +1,10 @@
 import {
-  invokeCommonInterfaceUsingPOST,
   invokeQueryDomainInterfaceUsingPOST,
   invokeQueryHistoryInterfaceUsingPOST,
   invokeQueryICPInterfaceUsingPOST,
   invokeQueryRCInterfaceUsingPOST,
   invokeRandomAvatarInterfaceUsingPOST,
-  invokeRandomCXKInterfaceUsingPOST,
+  invokeRandomCXKInterfaceUsingPOST, invokeRandomImageInterfaceUsingPOST,
   invokeRandomWordsInterfaceUsingPOST,
 } from '@/services/mufengapi-backend/interfaceController';
 import {
@@ -18,7 +17,6 @@ import TextArea from 'antd/es/input/TextArea';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import {getInsertNumUsingPOST} from "@/services/mufengapi-backend/userInterfaceInfoController";
-
 /**
  * 接口文档
  * @constructor
@@ -70,7 +68,7 @@ const Index: React.FC = () => {
     let interfaceId = data.id;
     if (interfaceId === 1) {
       try {
-        const res = await invokeCommonInterfaceUsingPOST({
+        const res = await invokeRandomImageInterfaceUsingPOST({
           id: params.id,
           ...values,
         });
@@ -78,7 +76,7 @@ const Index: React.FC = () => {
         if (res.data){
           message.success('请求成功');
         }else {
-          message.error('操作失败');
+          message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
         return false;
@@ -95,7 +93,7 @@ const Index: React.FC = () => {
         if (res.data){
           message.success('请求成功');
         }else {
-          message.error('操作失败');
+          message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
         return false;
@@ -112,7 +110,7 @@ const Index: React.FC = () => {
         if (res.data){
           message.success('请求成功');
         }else {
-          message.error('操作失败');
+          message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
         return false;
@@ -129,7 +127,7 @@ const Index: React.FC = () => {
         if (res.data){
           message.success('请求成功');
         }else {
-          message.error('操作失败');
+          message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
         return false;
@@ -146,7 +144,7 @@ const Index: React.FC = () => {
         if (res.data){
           message.success('请求成功');
         }else {
-          message.error('操作失败');
+          message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
         return false;
@@ -163,7 +161,7 @@ const Index: React.FC = () => {
         if (res.data){
           message.success('请求成功');
         }else {
-          message.error('操作失败');
+          message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
         return false;
@@ -180,7 +178,7 @@ const Index: React.FC = () => {
         if (res.data){
           message.success('请求成功');
         }else {
-          message.error('操作失败');
+          message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
         return false;
@@ -197,7 +195,7 @@ const Index: React.FC = () => {
         if (res.data){
           message.success('请求成功');
         }else {
-          message.error('操作失败');
+          message.error('请求失败，剩余次数不足！');
         }
       } catch (error: any) {
         return false;
@@ -235,12 +233,12 @@ const Index: React.FC = () => {
 
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              发送
+              调用
             </Button>
           </Form.Item>
         </Form>
       </Card>
-      <img src={invokeRes}  alt=""/>
+      <img src={invokeRes} width="100%" alt=""/>
       <Card title="返回信息" loading={invokeLoading}>
         {invokeRes}
       </Card>

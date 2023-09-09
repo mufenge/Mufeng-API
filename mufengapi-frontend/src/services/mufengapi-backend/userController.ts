@@ -157,3 +157,18 @@ export async function sendMailUsingPOST(
     ...(options || {}),
   });
 }
+
+/** updateUser POST /api/user/update */
+export async function updateUserUsingPOST(
+  body: API.UserUpdateRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseboolean>('/api/user/update', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
