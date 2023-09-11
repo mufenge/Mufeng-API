@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class MufengAPIClient {
 
-    private static final String GATEWAY_HOST = "https://springboot-ycd1-67608-4-1320422627.sh.run.tcloudbase.com";
+    private static final String GATEWAY_HOST = "http://localhost:8002";
     private String accesskey;
     private String secretKey;
 
