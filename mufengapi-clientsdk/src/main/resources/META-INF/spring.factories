@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.mufeng.mufengapiclientsdk.MufengapiClientConfig
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.mufeng.clientsdk.MufengapiClientConfig

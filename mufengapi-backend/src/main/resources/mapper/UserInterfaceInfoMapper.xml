@@ -2,12 +2,13 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mufeng.project.mapper.UserInterfaceInfoMapper">
+<mapper namespace="com.mufeng.backend.mapper.UserInterfaceInfoMapper">
 
-    <resultMap id="BaseResultMap" type="com.mufeng.model.entity.UserInterfaceInfo">
+    <resultMap id="BaseResultMap" type="com.mufeng.common.model.entity.UserInterfaceInfo">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="interfaceInfoId" column="interfaceInfoId" jdbcType="BIGINT"/>
+            <result property="interfaceInfoName" column="interfaceInfoName" jdbcType="VARCHAR"/>
             <result property="status" column="status" jdbcType="TINYINT"/>
             <result property="totalNum" column="totalNum" jdbcType="INTEGER"/>
             <result property="leftNum" column="leftNum" jdbcType="INTEGER"/>
@@ -17,23 +18,27 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,userId,interfaceInfoId,
+        id,userId,interfaceInfoId,interfaceInfoName
         status,totalNum,leftNum,
         create_time,update_time,is_deleted
     </sql>
-    <select id="listTopInvoke" resultType="com.mufeng.model.entity.UserInterfaceInfo">
+    <select id="listTopInvoke" resultType="com.mufeng.common.model.entity.UserInterfaceInfo">
         select interfaceInfoId, sum(totalNum) as totalNum from user_interface_info group by interfaceInfoId
         order by totalNum desc limit #{limit};
     </select>
-    <select id="getUserInvokeInfo" resultType="com.mufeng.model.entity.UserInterfaceInfo">
-        select status,interfaceInfoId,totalNum,leftNum from user_interface_info where userId = #{userId};
+    <select id="getUserInvokeInfo" resultType="com.mufeng.common.model.entity.UserInterfaceInfo">
+        select status,interfaceInfoId,interfaceInfoName,totalNum,leftNum from user_interface_info where userId = #{userId};
     </select>
     <insert id="insertNum" >
-        insert into user_interface_info(userId, interfaceInfoId,totalNum, leftNum)
-        values (#{userId},#{interfaceInfoId},0,100)
+        insert into user_interface_info(userId, interfaceInfoId,interfaceInfoName,totalNum, leftNum)
+        values (#{userId},#{interfaceInfoId},#{interfaceInfoName},0,100)
     </insert>
     <update id="invokeCount">
         update user_interface_info set leftNum = leftNum -1, totalNum = totalNum + 1
         where userId = #{userId} and interfaceInfoId = #{interfaceInfoId} and leftNum > 0;
     </update>
+    <select id="getInvokeUserLeftNum" resultType="integer">
+        select leftNum from user_interface_info
+        where userId = #{userId} and interfaceInfoId = #{interfaceInfoId}
+    </select>
 </mapper>

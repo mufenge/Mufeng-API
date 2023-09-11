@@ -1,13 +1,11 @@
 server:
-  port: 8090
+  port: 8002
 spring:
+  application:
+    name: mufengapi-gatewayV2
   cloud:
     gateway:
       routes:
-        - id: api_route
-          uri: http://localhost:7529
-          predicates:
-            - Path=/api/name/user
         - id: api_route2
           uri: https://api.btstu.cn
           predicates:
@@ -26,12 +24,6 @@ spring:
             - Path=/api/interface/getQueryICP
           filters:
             - SetPath=/api/site/icp
-        - id: api_route5
-          uri: https://api.vvhan.com
-          predicates:
-            - Path=/api/interface/getQueryHotlist
-          filters:
-            - SetPath=/api/hotlist
         - id: api_route6
           uri: https://api.btstu.cn
           predicates:
@@ -64,15 +56,12 @@ spring:
             - SetPath=/api/common/rubbish
 
 
-
-
-
 dubbo:
   application:
-    name: mufengapi-gateway
+    name: mufengapi-gatewayV2
   protocol:
     name: dubbo
     port: -1
   registry:
     id: nacos-registry
-    address: nacos://121.196.238.66:8849
+    address: nacos://124.223.143.199:8849
