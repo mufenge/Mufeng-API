@@ -14,6 +14,7 @@
         <module>mufengapi-interface</module>
         <module>mufengapi-gateway</module>
         <module>mufengapi-clientsdk</module>
+        <module>mufengapi-common</module>
     </modules>
 
     <parent>
