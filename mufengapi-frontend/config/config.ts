@@ -136,7 +136,7 @@ export default defineConfig({
   openAPI: [
     {
       requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath: 'http://loclahost:8001',
+      schemaPath: 'http://localhost:8001',
       projectName: 'mufengapi-backend',
     },
   ],
